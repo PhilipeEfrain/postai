@@ -1,0 +1,18 @@
+.login-card {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .full-width {
+    padding: 8px;
+    width: 100%;
+
+    input {
+        padding: 4px;
+    }
+  }
+  

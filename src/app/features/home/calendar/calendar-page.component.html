@@ -1,0 +1,15 @@
+<!-- calendar-page.component.html -->
+<div class="calendar-page">
+  <button (click)="showModal = true">Nova Postagem</button>
+
+  <app-calendar [events]="events" (dateSelected)="onEventClicked($event)"></app-calendar>
+
+  <app-create-post-modal 
+    *ngIf="showModal" 
+    [postToEdit]="selectedPost" 
+    (postCreated)="onPostCreated($event)"
+    (postUpdated)="onPostUpdated($event)"    
+    (modalClosed)="showModal = false; selectedPost = null"
+  />
+
+</div>

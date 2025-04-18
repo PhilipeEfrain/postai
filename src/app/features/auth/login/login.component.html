@@ -1,0 +1,21 @@
+<mat-card class="login-card">
+  <mat-card-title>Login</mat-card-title>
+  <mat-card-content>
+    <form (ngSubmit)="login()">
+      <mat-form-field appearance="fill" class="full-width">
+        <input matInput placeholder="Usuário" [(ngModel)]="email" name="email" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <input matInput placeholder="Senha" type="password" [(ngModel)]="password" name="password" required />
+      </mat-form-field>
+
+      <button class="btn-login-primary" type="submit">
+        Entrar
+      </button>
+      <button class="btn-login-outline" (click)="register()">
+        Criar conta
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

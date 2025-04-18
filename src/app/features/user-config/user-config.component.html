@@ -1,0 +1,22 @@
+<h2>Configuração do Negócio</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <label>
+    Nome do negócio:
+    <input formControlName="businessName" />
+  </label>
+
+  <label>
+    Ramo:
+    <input formControlName="businessCategory" />
+  </label>
+
+  <fieldset>
+    <legend>Canais principais:</legend>
+    <label><input type="checkbox" formControlName="instagram" /> Instagram</label>
+    <label><input type="checkbox" formControlName="facebook" /> Facebook</label>
+    <label><input type="checkbox" formControlName="whatsapp" /> WhatsApp</label>
+  </fieldset>
+
+  <button type="submit">Salvar</button>
+</form>

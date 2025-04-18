@@ -1,0 +1,21 @@
+<div>
+  <h1>Minhas Ideias</h1>
+  <button (click)="logout()">Sair</button>
+</div>
+
+
+<ul>
+  <li *ngFor="let idea of ideas$ | async">
+    {{ idea.text }} — {{ idea.date.toDate() | date:'short' }}
+  </li>
+</ul>
+
+<div>
+  <input [(ngModel)]="newIdea" placeholder="Nova ideia" />
+  <button (click)="add()">Adicionar</button>
+</div>
+
+<app-user-config />
+
+<!-- Calendário interativo -->
+<app-calendar-page />

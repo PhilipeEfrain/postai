@@ -1,1 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import 'styles/colors';
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+p, h1, h2, h3, h4, h5, h6, span, a  {
+    color: $grain-base;
+}
+
+.btn-login-primary {
+    width: 100%;
+    background-color: $columbia-blue;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: $grain-base;
+    font-weight: bold;
+    border: none;
+    border: 1px solid $grain-base;
+    margin: 8px;
+  }
+  
+  .btn-login-outline {
+    width: 100%;
+    background-color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: $grain-base;
+    font-weight: bold;
+    border: 1px solid $columbia-blue;
+    margin: 8px;
+  }

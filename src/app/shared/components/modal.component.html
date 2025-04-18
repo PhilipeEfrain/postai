@@ -1,0 +1,11 @@
+<!-- Só mostra se tiver modalData -->
+<div *ngIf="modalData" class="modal-wrapper">
+    <div class="backdrop" (click)="onClose()"></div>
+  
+    <div class="modal" [ngClass]="modalData.type">
+      <h2>{{ modalData.title }}</h2>
+      <p>{{ modalData.message }}</p>
+      <button (click)="onClose()">Fechar</button>
+    </div>
+  </div>
+  
