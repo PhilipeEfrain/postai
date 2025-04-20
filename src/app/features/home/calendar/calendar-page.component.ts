@@ -29,15 +29,26 @@ export class CalendarPageComponent {
       this.events = posts.map(post => ({
         title: post.title,
         start: this.convertTimestampToDate(post?.date),
+        end: this.convertTimestampToDate(post.end),
+        allDay: false,
         id: post.id
       }));
+      console.log('[DEBUG] Eventos carregados:', this.events);
     } catch (error) {
       console.error('[ERRO] Falha ao carregar eventos:', error);
     }
   }
 
   convertTimestampToDate(timestamp: any): Date {
-    return new Date(timestamp.seconds * 1000);
+    if (typeof timestamp?.toDate === 'function') {
+      return timestamp.toDate();
+    }
+
+    if (timestamp?.seconds) {
+      return new Date(timestamp.seconds * 1000);
+    }
+
+    return new Date();
   }
 
   async deletePost(postId: string) {

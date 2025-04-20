@@ -19,6 +19,7 @@ export interface sheduleInCalendarPost {
   links: string[],
   type: string, // feed, image, video
   date: Date
+  end?: Date;
   remindBefore: number,
   createdAt: Date
   updatedAt: Date

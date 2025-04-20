@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { Calendar, CalendarOptions, EventClickArg, EventInput } from '@fullcalendar/core';
+import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -23,11 +23,23 @@ export class CalendarComponent implements OnInit {
   calendarOptions: CalendarOptions = {
     locale: ptBR,
     initialView: 'dayGridMonth',
-    plugins: [dayGridPlugin, interactionPlugin],
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     dateClick: this.handleDateClick.bind(this),
     events: this.events,
+    slotDuration: '00:15:00',
     editable: true,
     eventClick: this.handleEventClick.bind(this),
+    headerToolbar: {
+      left: 'prev,next',
+      center: 'title',
+      right: 'timeGridWeek,timeGridDay' // user can switch between the two
+    },
+    views: {
+      timeGridFourDay: {
+        type: 'timeGrid',
+        duration: { days: 7 }
+      }
+    }
   };
 
   constructor() { }
@@ -38,8 +50,6 @@ export class CalendarComponent implements OnInit {
 
   // Função de clique na data (pode ser personalizada conforme necessidade)
   handleDateClick(event: any) {
-    console.log('Evento de data clicado:', event);
-    console.log('Data clicada:', event.date);
     this.dateSelected.emit(event.date);  // Passa a data clicada para o componente pai
   }
 

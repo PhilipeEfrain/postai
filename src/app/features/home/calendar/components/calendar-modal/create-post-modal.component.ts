@@ -48,9 +48,13 @@ export class CreatePostModalComponent implements OnChanges {
   }
 
   submit() {
+    console.log('submit', this.form.value);
     if (this.form.invalid) return;
 
     const value = this.form.value;
+
+    const startDate = new Date(value.date); // <-- aqui é a correção
+    const endDate = new Date(startDate.getTime() + 15 * 60 * 1000); // +15 minutos
 
     const post: Partial<sheduleInCalendarPost> = {
       title: value.title ?? '',
@@ -59,7 +63,8 @@ export class CreatePostModalComponent implements OnChanges {
       links: value.links?.split(',').map((l: string) => l.trim()).filter(Boolean) ?? [],
       url: value.url ?? '',
       type: value.type ?? 'feed',
-      date: value.date instanceof Date ? value.date : new Date(value.date), // 👈 FIX
+      date: startDate,
+      end: endDate,
       remindBefore: Number(value.remindBefore ?? 1),
     };
 
@@ -71,6 +76,8 @@ export class CreatePostModalComponent implements OnChanges {
 
     this.form.reset();
   }
+
+
 
 
 
