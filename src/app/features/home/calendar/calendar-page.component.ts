@@ -3,7 +3,6 @@ import { CommonModule } from "@angular/common";
 import { CreatePostModalComponent } from "./components/calendar-modal/create-post-modal.component";
 import { CalendarComponent } from "./components/calendar/calendar.component";
 import { sheduleInCalendarPost } from "../../../interface/user-config.model";
-import dayjs, { Dayjs } from "dayjs";
 import { CalendarPostService } from "../../../shared/services/calendar-post.service/calendar-post.service";
 
 @Component({
@@ -29,7 +28,7 @@ export class CalendarPageComponent {
       const posts = await this.calendarService.getAllPosts();
       this.events = posts.map(post => ({
         title: post.title,
-        start: dayjs(post.date).toDate(),
+        start: this.convertTimestampToDate(post?.date),
         id: post.id
       }));
     } catch (error) {
@@ -37,14 +36,24 @@ export class CalendarPageComponent {
     }
   }
 
+  convertTimestampToDate(timestamp: any): Date {
+    return new Date(timestamp.seconds * 1000);
+  }
+
   async deletePost(postId: string) {
-    await this.calendarService.deletePost(postId);
-    this.events = this.events.filter(e => e.id !== postId);
+    try {
+      await this.calendarService.deletePost(postId);
+      this.events = this.events.filter(e => e.id !== postId);
+      this.showModal = false;
+      this.selectedPost = null;
+    } catch (error) {
+      console.error('[ERRO] Falha ao deletar post:', error);
+    }
   }
 
   async editPost(postId: string, updatedData: Partial<sheduleInCalendarPost>, post: sheduleInCalendarPost & { id: string }) {
     await this.calendarService.updatePost(postId, updatedData);
-    await this.loadEvents(); // recarrega os dados atualizados
+    await this.loadEvents();
     this.selectedPost = post;
     this.showModal = true;
   }
@@ -53,18 +62,20 @@ export class CalendarPageComponent {
     await this.calendarService.updatePost(event.id, event.changes);
     this.showModal = false;
     this.selectedPost = null;
-    await this.loadEvents(); // recarrega os dados atualizados
+    await this.loadEvents();
   }
 
   async onPostCreated(post: Omit<sheduleInCalendarPost, 'createdAt' | 'updatedAt'>) {
     try {
+      console.log('[DEBUG] Post recebido para criação:', post);
       await this.calendarService.addPost(post);
+      console.log('[DEBUG] Post enviado para o serviço com sucesso');
 
       this.events = [
         ...this.events,
         {
           title: post.title,
-          start: dayjs(post.date).toDate()
+          start: post.date
         }
       ];
 
@@ -74,37 +85,34 @@ export class CalendarPageComponent {
     }
   }
 
-  // Novo método para lidar com a seleção do evento para edição
-  async onEventClicked(event: any) {
-    console.log('Evento clicado:', event);
-  
-    // Consulta o Firebase para obter os dados completos do post
+  async onEventClicked(event: string) {
+    const postId = event;
+
+    if (!postId || typeof postId !== 'string') {
+      this.showModal = true;
+      return;
+    }
+
     try {
-      const post = await this.calendarService.getPostById(event);  // Agora busca o post corretamente
-        console.log('Post encontrado:', post);  // Adicione esta linha para depuração
-      // Passa os dados completos para o modal
+      const post = await this.calendarService.getPostById(postId);
       this.selectedPost = post;
       this.showModal = true;
     } catch (error) {
-      console.error('[ERRO] Falha ao carregar evento:', error);
     }
   }
-  onDateClicked(date?: Dayjs) {
+
+  onDateClicked(date?: Date) {
     if (!date) {
-      // Se data for nula, fecha o modal
       this.showModal = false;
       return;
     }
 
-    // Verifique se a data clicada possui um post associado
-    const post = this.events.find(event => dayjs(event.start).isSame(date, 'day'));
+    const post = this.events.find(event => event.start.isSame(date, 'day'));
 
     if (post) {
-      // Se existir um post para a data clicada, preenche o post selecionado e abre o modal
       this.selectedPost = post;
       this.showModal = true;
     } else {
-      // Caso contrário, abre o modal em modo de criação
       this.selectedPost = null;
       this.showModal = true;
     }

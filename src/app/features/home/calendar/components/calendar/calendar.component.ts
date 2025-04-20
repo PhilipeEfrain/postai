@@ -5,22 +5,23 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptBR from '@fullcalendar/core/locales/pt-br';
-import { Dayjs } from 'dayjs';
+
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule], 
+  imports: [FullCalendarModule],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
 })
 
 export class CalendarComponent implements OnInit {
   @Output() dateSelected = new EventEmitter<any>();
-  @Input() events: EventInput[] = []; 
-  calendarPlugins = [dayGridPlugin, timeGridPlugin, interactionPlugin]; 
+  @Input() events: EventInput[] = [];
+  calendarPlugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
 
   calendarOptions: CalendarOptions = {
+    locale: ptBR,
     initialView: 'dayGridMonth',
     plugins: [dayGridPlugin, interactionPlugin],
     dateClick: this.handleDateClick.bind(this),
@@ -29,7 +30,7 @@ export class CalendarComponent implements OnInit {
     eventClick: this.handleEventClick.bind(this),
   };
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     // Qualquer lógica adicional necessária durante a inicialização do componente
@@ -42,10 +43,10 @@ export class CalendarComponent implements OnInit {
     this.dateSelected.emit(event.date);  // Passa a data clicada para o componente pai
   }
 
-  handleEventClick(clickInfo: any) { 
+  handleEventClick(clickInfo: any) {
     // Emite os dados do evento para abrir o modal de edição
     console.log('enviei', clickInfo.event.id);
     this.dateSelected.emit(clickInfo.event.id);
   }
-  
+
 }

@@ -3,7 +3,6 @@ import { Component, EventEmitter, Input, OnChanges, SimpleChanges, Output } from
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { sheduleInCalendarPost } from '../../../../../interface/user-config.model';
-import dayjs from 'dayjs';
 
 @Component({
   selector: 'app-create-post-modal',
@@ -17,6 +16,7 @@ export class CreatePostModalComponent implements OnChanges {
   @Output() postCreated = new EventEmitter<any>();
   @Output() postUpdated = new EventEmitter<{ id: string; changes: Partial<sheduleInCalendarPost> }>();
   @Output() modalClosed = new EventEmitter<void>();
+  @Output() postDeleted = new EventEmitter<string>();
 
   form = this.fb.group({
     title: ['', Validators.required],
@@ -41,7 +41,7 @@ export class CreatePostModalComponent implements OnChanges {
         links: post.links?.join(', '),
         url: post.url,
         type: post.type,
-        date: dayjs(post.date).toDate(),
+        date: post.date,
         remindBefore: post.remindBefore
       });
     }
@@ -51,6 +51,7 @@ export class CreatePostModalComponent implements OnChanges {
     if (this.form.invalid) return;
 
     const value = this.form.value;
+
     const post: Partial<sheduleInCalendarPost> = {
       title: value.title ?? '',
       description: value.description ?? '',
@@ -58,7 +59,7 @@ export class CreatePostModalComponent implements OnChanges {
       links: value.links?.split(',').map((l: string) => l.trim()).filter(Boolean) ?? [],
       url: value.url ?? '',
       type: value.type ?? 'feed',
-      date: dayjs(value.date).toDate(),
+      date: value.date instanceof Date ? value.date : new Date(value.date), // 👈 FIX
       remindBefore: Number(value.remindBefore ?? 1),
     };
 
@@ -69,6 +70,14 @@ export class CreatePostModalComponent implements OnChanges {
     }
 
     this.form.reset();
+  }
+
+
+
+  delete() {
+    if (this.postToEdit?.id) {
+      this.postDeleted.emit(this.postToEdit.id);
+    }
   }
 
   closeModal() {

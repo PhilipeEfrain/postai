@@ -26,7 +26,6 @@
     "@fullcalendar/interaction": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
     "bootstrap": "^5.3.5",
-    "dayjs": "^1.11.13",
     "firebase": "^11.6.0",
     "rxfire": "^6.1.0",
     "rxjs": "~7.8.0",

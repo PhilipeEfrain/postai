@@ -1,7 +1,7 @@
 <div class="modal fade show d-block" tabindex="-1" role="dialog" style="background-color: rgba(0,0,0,0.5);">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      
+
       <div class="modal-header">
         <h5 class="modal-title">{{ postToEdit ? 'Editar Postagem' : 'Nova Postagem' }}</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
@@ -54,6 +54,7 @@
           </div>
 
           <div class="modal-footer">
+            <button *ngIf="postToEdit" type="button" (click)="delete()" class="btn-delete">Deletar</button>
             <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
             <button type="submit" class="btn btn-primary">
               {{ postToEdit ? 'Salvar Alterações' : 'Criar Postagem' }}

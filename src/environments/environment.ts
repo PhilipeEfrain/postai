@@ -6,20 +6,23 @@
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+import { credentials } from '../../credentials';
+
 export const environment = {
     production: false,
     firebase: {
-        apiKey: "AIzaSyAnrzN8tANHQLkP81en-SN-P2LeFwhbFnk",
-        authDomain: "linkhub-eff86.firebaseapp.com",
-        projectId: "linkhub-eff86",
-        storageBucket: "linkhub-eff86.firebasestorage.app",
-        messagingSenderId: "930936841932",
-        appId: "1:930936841932:web:9adb9dabfbe29848d2c469",
-        measurementId: "G-1MJ2C877K2"
+        apiKey: credentials.apiKey,
+        authDomain: credentials.authDomain,
+        projectId: credentials.projectId,
+        storageBucket: credentials.storageBucket,
+        databaseURL: credentials.databaseURL,
+        messagingSenderId: credentials.messagingSenderId,
+        appId: credentials.appId,
+        measurementId: credentials.measurementId,
     }
 };
 
 // // Initialize Firebase
 // export const app = initializeApp(environment);
 // export const analytics = getAnalytics(app);
- 

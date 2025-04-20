@@ -12,7 +12,7 @@ import { environment } from './environments/environment';
 import { importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { AUTH_TOKEN, FIRESTORE_TOKEN } from './app/core/firebase.tokens'; 
+import { AUTH_TOKEN, FIRESTORE_TOKEN } from './app/core/firebase.tokens';
 
 async function main() {
   const firebaseApp: FirebaseApp = initializeApp(environment.firebase);
@@ -27,10 +27,17 @@ async function main() {
     providers: [
       provideRouter(routes),
       importProvidersFrom(BrowserAnimationsModule),
-      { provide: FIRESTORE_TOKEN, useValue: firestore }, 
+      { provide: FIRESTORE_TOKEN, useValue: firestore },
       { provide: AUTH_TOKEN, useValue: auth },
     ]
   });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('firebase-messaging-sw.js')
+      .then((registration) => {
+        console.log('Service Worker registrado com sucesso:', registration);
+      }).catch(err => console.error('Erro ao registrar Service Worker:', err));
+  }
 }
 
 main().catch(err => console.error('Erro ao iniciar o app', err));

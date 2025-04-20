@@ -4,12 +4,8 @@
 
   <app-calendar [events]="events" (dateSelected)="onEventClicked($event)"></app-calendar>
 
-  <app-create-post-modal 
-    *ngIf="showModal" 
-    [postToEdit]="selectedPost" 
-    (postCreated)="onPostCreated($event)"
-    (postUpdated)="onPostUpdated($event)"    
-    (modalClosed)="showModal = false; selectedPost = null"
-  />
+  <app-create-post-modal *ngIf="showModal" [postToEdit]="selectedPost" (postCreated)="onPostCreated($event)"
+    (postUpdated)="onPostUpdated($event)" (modalClosed)="showModal = false; selectedPost = null"
+    (postDeleted)="deletePost($event)" />
 
 </div>
