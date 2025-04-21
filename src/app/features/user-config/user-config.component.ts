@@ -1,4 +1,4 @@
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject, Inject, Input } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Auth } from 'firebase/auth';
 import { UserConfigService } from './user-config.service'; // Certifique-se de importar o serviço correto
@@ -10,16 +10,17 @@ import { AUTH_TOKEN } from '../../core/firebase.tokens';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
   ],
   templateUrl: './user-config.component.html',
 })
 export class UserConfigComponent {
+
   private fb = inject(FormBuilder);
   private userConfigService = inject(UserConfigService);
-  
+
   constructor(@Inject(AUTH_TOKEN) private auth: Auth) { }
-  
+
   form: FormGroup = this.fb.group({
     businessName: [''],
     businessCategory: [''],
@@ -67,5 +68,5 @@ export class UserConfigComponent {
     await this.userConfigService.saveUserConfig(config);
   }
 
-  
+
 }

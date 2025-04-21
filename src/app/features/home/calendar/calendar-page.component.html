@@ -6,6 +6,6 @@
 
   <app-create-post-modal *ngIf="showModal" [postToEdit]="selectedPost" (postCreated)="onPostCreated($event)"
     (postUpdated)="onPostUpdated($event)" (modalClosed)="showModal = false; selectedPost = null"
-    (postDeleted)="deletePost($event)" />
+    (postDeleted)="deletePost($event)" [listClients]="listClients" />
 
 </div>

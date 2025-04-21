@@ -12,29 +12,29 @@ export class FirestoreService {
   constructor(
     @Inject(FIRESTORE_TOKEN) private db: Firestore,
     @Inject(AUTH_TOKEN) private auth: Auth
-  ) {}
+  ) { }
 
-  addIdea(text: string): Promise<void> {
+  addClient(text: string): Promise<void> {
     const user = this.auth.currentUser;
     if (!user) {
       return Promise.reject('Usuário não autenticado');
     }
 
-    const ideasRef = collection(this.db, `users/${user.uid}/ideas`);
-    return addDoc(ideasRef, {
+    const clientRef = collection(this.db, `users/${user.uid}/client`);
+    return addDoc(clientRef, {
       text,
       date: new Date(),
-    }).then(() => {});
+    }).then(() => { });
   }
 
-  listIdeas(): Observable<any[]> {
+  listClients(): Observable<any[]> {
     const user = this.auth.currentUser;
     if (!user) {
       throw new Error('Usuário não autenticado');
     }
 
-    const ideasRef = collection(this.db, `users/${user.uid}/ideas`);
-    const q = query(ideasRef, orderBy('date', 'desc'));
+    const clientRef = collection(this.db, `users/${user.uid}/client`);
+    const q = query(clientRef, orderBy('date', 'desc'));
     return collectionData(q, { idField: 'id' });
   }
 }

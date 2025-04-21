@@ -2,7 +2,8 @@
 import { Component, EventEmitter, Input, OnChanges, SimpleChanges, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { sheduleInCalendarPost } from '../../../../../interface/user-config.model';
+import { ListClientsInterface, sheduleInCalendarPost } from '../../../../../interface/user-config.model';
+import { Observable, take } from 'rxjs';
 
 @Component({
   selector: 'app-create-post-modal',
@@ -12,14 +13,17 @@ import { sheduleInCalendarPost } from '../../../../../interface/user-config.mode
   styleUrls: ['./create-post-modal.component.scss']
 })
 export class CreatePostModalComponent implements OnChanges {
+  @Input() listClients: Observable<ListClientsInterface[]>;
   @Input() postToEdit: (sheduleInCalendarPost & { id: string }) | null = null;
   @Output() postCreated = new EventEmitter<any>();
   @Output() postUpdated = new EventEmitter<{ id: string; changes: Partial<sheduleInCalendarPost> }>();
   @Output() modalClosed = new EventEmitter<void>();
   @Output() postDeleted = new EventEmitter<string>();
+  clients$: ListClientsInterface[]
 
   form = this.fb.group({
     title: ['', Validators.required],
+    clientId: ['', Validators.required],
     description: [''],
     hashtags: [''],
     links: [''],
@@ -32,10 +36,12 @@ export class CreatePostModalComponent implements OnChanges {
   constructor(private fb: FormBuilder) { }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.createListClients()
     if (changes['postToEdit'] && this.postToEdit) {
       const post = this.postToEdit;
       this.form.patchValue({
         title: post.title,
+        clientId: post.clientId,
         description: post.description,
         hashtags: post.hashtags?.join(', '),
         links: post.links?.join(', '),
@@ -45,6 +51,14 @@ export class CreatePostModalComponent implements OnChanges {
         remindBefore: post.remindBefore
       });
     }
+  }
+
+  createListClients() {
+    if (!this.listClients) return;
+    this.listClients.pipe(take(1)).subscribe((resp) => {
+      console.log('listClients', resp);
+      this.clients$ = resp
+    })
   }
 
   submit() {

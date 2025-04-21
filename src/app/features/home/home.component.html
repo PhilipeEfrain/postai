@@ -5,17 +5,17 @@
 
 
 <ul>
-  <li *ngFor="let idea of ideas$ | async">
-    {{ idea.text }} — {{ idea.date.toDate() | date:'short' }}
+  <li *ngFor="let client of clients$ | async">
+    {{ client.text }} — {{ client.date.toDate() | date:'short' }}
   </li>
 </ul>
 
 <div>
-  <input [(ngModel)]="newIdea" placeholder="Nova ideia" />
-  <button (click)="add()">Adicionar</button>
+  <input [(ngModel)]="newClient" placeholder="Nova ideia" />
+  <button (click)="add()">Adicionar novo cliente</button>
 </div>
 
 <app-user-config />
 
 <!-- Calendário interativo -->
-<app-calendar-page />
+<app-calendar-page [listClients]="clients$" />

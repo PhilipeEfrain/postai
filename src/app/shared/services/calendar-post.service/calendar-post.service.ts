@@ -24,6 +24,7 @@ export class CalendarPostService {
     const now = Timestamp.now();
     await addDoc(ref, {
       ...post,
+      clientId: post.clientId,
       createdAt: now,
       updatedAt: now,
     });
@@ -35,20 +36,20 @@ export class CalendarPostService {
     const snapshot = await getDocs(ref);
     return snapshot.docs.map((doc) => ({
       ...(doc.data() as sheduleInCalendarPost),
-      id: doc.id
+      id: doc.id,
     }));
   }
 
   async updatePost(postId: string, changes: Partial<sheduleInCalendarPost>): Promise<void> {
     const uid = await this.getUserUid();
     const ref = doc(this.firestore, `users/${uid}/posts/${postId}`);
-    
+
     // Certifique-se de que as propriedades que você está passando sejam válidas
-    const validChanges = { 
-      ...changes, 
-      updatedAt: Timestamp.now() 
+    const validChanges = {
+      ...changes,
+      updatedAt: Timestamp.now()
     };
-  
+
     try {
       await updateDoc(ref, validChanges);
     } catch (error) {
@@ -67,7 +68,7 @@ export class CalendarPostService {
     const uid = await this.getUserUid();  // Obtém o UID do usuário autenticado
     const docRef = doc(this.firestore, `users/${uid}/posts`, id);  // Corrige a referência para a subcoleção do usuário
     const docSnap = await getDoc(docRef);
-  
+
     if (docSnap.exists()) {
       return { ...docSnap.data(), id: docSnap.id } as sheduleInCalendarPost & { id: string };
     } else {
@@ -76,5 +77,5 @@ export class CalendarPostService {
   }
 
 
-  
+
 }

@@ -1,9 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { CreatePostModalComponent } from "./components/calendar-modal/create-post-modal.component";
 import { CalendarComponent } from "./components/calendar/calendar.component";
-import { sheduleInCalendarPost } from "../../../interface/user-config.model";
+import { ListClientsInterface, sheduleInCalendarPost } from "../../../interface/user-config.model";
 import { CalendarPostService } from "../../../shared/services/calendar-post.service/calendar-post.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'app-calendar-page',
@@ -13,6 +14,7 @@ import { CalendarPostService } from "../../../shared/services/calendar-post.serv
   styleUrls: ['./calendar-page.component.scss']
 })
 export class CalendarPageComponent {
+  @Input() listClients: Observable<ListClientsInterface[]>;
   events: any[] = [];
   showModal = false;
   selectedPost: (sheduleInCalendarPost & { id: string }) | null = null;
@@ -85,6 +87,7 @@ export class CalendarPageComponent {
       this.events = [
         ...this.events,
         {
+          clientId: post.clientId,
           title: post.title,
           start: post.date
         }

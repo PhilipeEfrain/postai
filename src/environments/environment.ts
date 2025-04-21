@@ -20,6 +20,7 @@ export const environment = {
         messagingSenderId: credentials.messagingSenderId,
         appId: credentials.appId,
         measurementId: credentials.measurementId,
+        vapidKey: credentials.vapidKey,
     }
 };
 

@@ -10,6 +10,15 @@
       <div class="modal-body">
         <form [formGroup]="form" (ngSubmit)="submit()">
           <div class="mb-3">
+            <label class="form-label">Cliente:</label>
+            <select formControlName="clientId" class="form-select">
+              <option *ngFor="let client of clients$" [value]="client.id">
+                {{ client.text }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-3">
             <label class="form-label">Título:</label>
             <input formControlName="title" type="text" class="form-control" />
           </div>

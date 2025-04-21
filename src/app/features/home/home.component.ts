@@ -23,48 +23,43 @@ export class HomeComponent implements OnInit {
   private authService = inject(AuthService);
   private auth = inject<Auth>(AUTH_TOKEN);
 
-  // Só carrega as ideias depois que o usuário estiver autenticado
-  ideas$ = this.authService.getCurrentUser().pipe(
+  clients$ = this.authService.getCurrentUser().pipe(
     filter(user => !!user),
-    switchMap(() => this.fs.listIdeas())
+    switchMap(() => this.fs.listClients())
   );
 
-  newIdea = '';
+  newClient = '';
 
-  // Eventos exibidos no calendário
   events: EventInput[] = [];
 
   ngOnInit(): void {
-    // Popula o calendário assim que o auth e as ideias estiverem disponíveis
     this.authService.getCurrentUser().pipe(
       filter(user => !!user),
       first(),
-      switchMap(() => this.fs.listIdeas())
-    ).subscribe(ideas => {
-      this.events = ideas.map(idea => ({
-        title: idea.text,
-        date: idea.date.toDate().toISOString().split('T')[0]
+      switchMap(() => this.fs.listClients())
+    ).subscribe(clients => {
+      this.events = clients.map(client => ({
+        title: client.text,
+        date: client.date.toDate().toISOString().split('T')[0]
       }));
     });
   }
 
   add() {
-    const text = this.newIdea.trim();
+    const text = this.newClient.trim();
     if (!text) return;
 
-    this.fs.addIdea(text)
-      .then(() => this.newIdea = '')
+    this.fs.addClient(text)
+      .then(() => this.newClient = '')
       .catch(err => console.error('Erro ao adicionar ideia:', err));
   }
 
   async logout() {
     await signOut(this.auth);
     alert('Você saiu com sucesso!');
-    // redirecione à vontade, ex:
-    // this.router.navigate(['/login']);
   }
 
-  // Caso queira reagir a cliques de data no calendário
+
   onDateClick(dateStr: string) {
     // ex: abrir modal pré-preenchido com a data selecionada
   }

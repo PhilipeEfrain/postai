@@ -14,19 +14,19 @@ export class ApiService {
   constructor(
     private http: HttpClient,
     @Inject(FIREBASE_AUTH) private auth: Auth // Corrigido para usar o token FIREBASE_AUTH
-  ) {}
+  ) { }
 
-  async addIdea(text: string): Promise<void> {
+  async addClient(text: string): Promise<void> {
     const user = this.auth.currentUser;
     if (!user) throw new Error('Usuário não autenticado');
 
-    await firstValueFrom(this.http.post(`${this.baseUrl}/ideas`, {
+    await firstValueFrom(this.http.post(`${this.baseUrl}/client`, {
       uid: user.uid,
       text,
     }));
   }
 
-  listIdeas(uid: string) {
-    return this.http.get(`${this.baseUrl}/ideas?uid=${uid}`);
+  listClients(uid: string) {
+    return this.http.get(`${this.baseUrl}/client?uid=${uid}`);
   }
 }
