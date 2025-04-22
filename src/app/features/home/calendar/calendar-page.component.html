@@ -1,13 +1,14 @@
-<!-- calendar-page.component.html -->
-
 <app-post-sidebar #postSidebar [postToEdit]="selectedPost"></app-post-sidebar>
 <section class="row">
-  <div ngClass="calendar-page col-12 col-md-8">
+  <!-- Calendário com ngClass condicional -->
+  <div [ngClass]="openPreview ? 'calendar-page col-12 col-md-8' : 'calendar-page col-12 col-md-12'">
     <button class="btn btn-primary" (click)="this.postSidebar.open();">Agendar nova postagem</button>
     <app-calendar [events]="events" (dateSelected)="onEventClicked($event)"></app-calendar>
   </div>
-  <div class="col-12 col-md-4">
-    <app-mock-posts [post]="openPost" (edit)="onEditPost($event)" (closePreview)="closePreview()"
+
+  <!-- Sidebar só aparece quando openPreview for true -->
+  <div *ngIf="openPreview" class="col-12 col-md-4">
+    <app-mock-posts [post]="openPost" (edit)="openSidebarToEdit()" (closePreview)="closePreview()"
       (deletePost)="openDeleteConfirmationModal($event)" />
   </div>
 </section>

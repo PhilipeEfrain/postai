@@ -83,7 +83,6 @@ export class CalendarPageComponent {
 
   async onEventClicked(postId: string) {
     if (!postId || typeof postId !== 'string') {
-      this.postSidebar.open();
       return;
     }
 
@@ -100,10 +99,13 @@ export class CalendarPageComponent {
     }
   }
 
+  openSidebarToEdit() {
+    this.postSidebar.open();
+  }
+
   onEditPost(post: sheduleInCalendarPost) {
     this.openPost = post;
     this.openPreview = true;
-    this.postSidebar.open();
   }
 
   onDateClicked(date?: Date) {
@@ -139,6 +141,8 @@ export class CalendarPageComponent {
       await this.calendarService.deletePost(this.deletePostId);
       this.events = this.events.filter(e => e.id !== this.deletePostId);
       this.selectedPost = null;
+      this.openPost = null!;
+      this.openPreview = false;
       this.postSidebar.close();
     } catch (error) {
       console.error('[ERRO] Falha ao deletar post:', error);
