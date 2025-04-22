@@ -2,7 +2,7 @@
 import { Component, EventEmitter, Input, OnChanges, SimpleChanges, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ListClientsInterface, sheduleInCalendarPost } from '../../../../../interface/user-config.model';
+import { ListClientsInterface, scheduleInCalendarPost } from '../../../../../interface/user-config.model';
 import { Observable, take } from 'rxjs';
 import { CalendarPostService } from '../../../../../shared/services/calendar-post.service/calendar-post.service';
 
@@ -15,9 +15,9 @@ import { CalendarPostService } from '../../../../../shared/services/calendar-pos
 })
 export class CreatePostModalComponent implements OnChanges {
   @Input() listClients: Observable<ListClientsInterface[]>;
-  @Input() postToEdit: sheduleInCalendarPost | null = null;
+  @Input() postToEdit: scheduleInCalendarPost | null = null;
   @Output() postCreated = new EventEmitter<any>();
-  @Output() postUpdated = new EventEmitter<{ id: string; changes: Partial<sheduleInCalendarPost> }>();
+  @Output() postUpdated = new EventEmitter<{ id: string; changes: Partial<scheduleInCalendarPost> }>();
   @Output() modalClosed = new EventEmitter<void>();
   @Output() postDeleted = new EventEmitter<string>();
   clients$: ListClientsInterface[]
@@ -72,13 +72,18 @@ export class CreatePostModalComponent implements OnChanges {
 
   createListClients() {
     if (!this.listClients) return;
+
     this.listClients.pipe(take(1)).subscribe((resp) => {
-      console.log('listClients', resp);
-      this.clients$ = resp
-    })
+      this.clients$ = resp;
+
+      if (resp.length === 1) {
+        this.form.get('clientId')?.setValue(resp[0].id);
+      }
+    });
   }
 
   submit() {
+    console.log('submit', this.form);
     console.log('submit', this.form.value);
     if (this.form.invalid) return;
 
@@ -87,7 +92,7 @@ export class CreatePostModalComponent implements OnChanges {
     const startDate = new Date(value.date); // <-- aqui é a correção
     const endDate = new Date(startDate.getTime() + 15 * 60 * 1000); // +15 minutos
 
-    const post: Partial<sheduleInCalendarPost> = {
+    const post: Partial<scheduleInCalendarPost> = {
       title: value.title ?? '',
       description: value.description ?? '',
       hashtags: value.hashtags?.split(',').map((h: string) => h.trim()).filter(Boolean) ?? [],

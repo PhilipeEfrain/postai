@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Firestore, collection, Timestamp, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
-import { sheduleInCalendarPost } from "../../../interface/user-config.model";
+import { scheduleInCalendarPost } from "../../../interface/user-config.model";
 import { AUTH_TOKEN, FIREBASE_FIRESTORE } from "../../../core/firebase.tokens";
 
 
@@ -18,7 +18,7 @@ export class CalendarPostService {
     return user.uid;
   }
 
-  async addPost(post: Omit<sheduleInCalendarPost, 'createdAt' | 'updatedAt'>): Promise<void> {
+  async addPost(post: Omit<scheduleInCalendarPost, 'createdAt' | 'updatedAt'>): Promise<void> {
     const uid = await this.getUserUid();
     const ref = collection(this.firestore, `users/${uid}/posts`);
     const now = Timestamp.now();
@@ -30,17 +30,17 @@ export class CalendarPostService {
     });
   }
 
-  async getAllPosts(): Promise<(sheduleInCalendarPost & { id: string })[]> {
+  async getAllPosts(): Promise<(scheduleInCalendarPost & { id: string })[]> {
     const uid = await this.getUserUid();
     const ref = collection(this.firestore, `users/${uid}/posts`);
     const snapshot = await getDocs(ref);
     return snapshot.docs.map((doc) => ({
-      ...(doc.data() as sheduleInCalendarPost),
+      ...(doc.data() as scheduleInCalendarPost),
       id: doc.id,
     }));
   }
 
-  async updatePost(postId: string, changes: Partial<sheduleInCalendarPost>): Promise<void> {
+  async updatePost(postId: string, changes: Partial<scheduleInCalendarPost>): Promise<void> {
     const uid = await this.getUserUid();
     const ref = doc(this.firestore, `users/${uid}/posts/${postId}`);
 
@@ -64,13 +64,13 @@ export class CalendarPostService {
     await deleteDoc(ref);
   }
 
-  async getPostById(id: string): Promise<sheduleInCalendarPost & { id: string }> {
+  async getPostById(id: string): Promise<scheduleInCalendarPost & { id: string }> {
     const uid = await this.getUserUid();  // Obtém o UID do usuário autenticado
     const docRef = doc(this.firestore, `users/${uid}/posts`, id);  // Corrige a referência para a subcoleção do usuário
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      return { ...docSnap.data(), id: docSnap.id } as sheduleInCalendarPost & { id: string };
+      return { ...docSnap.data(), id: docSnap.id } as scheduleInCalendarPost & { id: string };
     } else {
       throw new Error('Post não encontrado');
     }

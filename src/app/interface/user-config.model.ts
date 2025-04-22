@@ -13,7 +13,7 @@ export interface UserConfig {
   };
 }
 
-export interface sheduleInCalendarPost {
+export interface scheduleInCalendarPost {
   title: string,
   clientId: string,
   url: string,

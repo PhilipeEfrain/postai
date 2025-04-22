@@ -5,7 +5,7 @@ import { CalendarComponent } from "./components/calendar/calendar.component";
 import { PostSidebarComponent } from "../../post-sidebar/post-sidebar.component";
 import { MockPostsComponent } from "../../mock-posts/mock-posts.component";
 import { CalendarPostService } from "../../../shared/services/calendar-post.service/calendar-post.service";
-import { ListClientsInterface, sheduleInCalendarPost } from "../../../interface/user-config.model";
+import { ListClientsInterface, scheduleInCalendarPost } from "../../../interface/user-config.model";
 
 @Component({
   selector: 'app-calendar-page',
@@ -18,8 +18,8 @@ export class CalendarPageComponent {
   @Input() listClients!: Observable<ListClientsInterface[]>;
   @ViewChild('postSidebar') postSidebar!: PostSidebarComponent;
   events: any[] = [];
-  openPost!: sheduleInCalendarPost;
-  selectedPost: sheduleInCalendarPost | null = null;
+  openPost!: scheduleInCalendarPost;
+  selectedPost: scheduleInCalendarPost | null = null;
   openPreview = false;
 
   private deletePostId: string | null = null;
@@ -56,7 +56,7 @@ export class CalendarPageComponent {
     return new Date();
   }
 
-  async onPostCreated(post: Omit<sheduleInCalendarPost, 'createdAt' | 'updatedAt'>) {
+  async onPostCreated(post: Omit<scheduleInCalendarPost, 'createdAt' | 'updatedAt'>) {
     try {
       await this.calendarService.addPost(post);
       this.events = [...this.events, {
@@ -70,7 +70,7 @@ export class CalendarPageComponent {
     }
   }
 
-  async onPostUpdated(event: { id: string, changes: Partial<sheduleInCalendarPost> }) {
+  async onPostUpdated(event: { id: string, changes: Partial<scheduleInCalendarPost> }) {
     try {
       await this.calendarService.updatePost(event.id, event.changes);
       await this.loadEvents();
@@ -103,7 +103,7 @@ export class CalendarPageComponent {
     this.postSidebar.open();
   }
 
-  onEditPost(post: sheduleInCalendarPost) {
+  onEditPost(post: scheduleInCalendarPost) {
     this.openPost = post;
     this.openPreview = true;
   }

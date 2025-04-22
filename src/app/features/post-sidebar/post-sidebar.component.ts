@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { CreatePostModalComponent } from '../home/calendar/components/calendar-form/create-post-form.component';
-import { sheduleInCalendarPost } from '../../interface/user-config.model';
+import { ListClientsInterface, scheduleInCalendarPost } from '../../interface/user-config.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-post-sidebar',
@@ -10,7 +11,9 @@ import { sheduleInCalendarPost } from '../../interface/user-config.model';
   styleUrl: './post-sidebar.component.scss'
 })
 export class PostSidebarComponent implements AfterViewInit {
-  @Input() postToEdit?: sheduleInCalendarPost;
+  @Input() postToEdit?: scheduleInCalendarPost;
+  @Input() listClients!: Observable<ListClientsInterface[]>;
+
   @ViewChild('offcanvasRef') offcanvasRef!: ElementRef;
 
   private offcanvasInstance: any;

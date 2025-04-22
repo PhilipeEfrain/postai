@@ -3,10 +3,12 @@
     <div class="mb-3">
       <label class="form-label">Cliente:</label>
       <select formControlName="clientId" class="form-select">
+        <option value="" disabled selected>Selecione um cliente</option>
         <option *ngFor="let client of clients$" [value]="client.id">
           {{ client.text }}
         </option>
       </select>
+
     </div>
 
     <div class="mb-3">

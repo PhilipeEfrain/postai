@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { sheduleInCalendarPost } from '../../interface/user-config.model';
+import { scheduleInCalendarPost } from '../../interface/user-config.model';
 import { CommonModule } from '@angular/common';
 import { SafeUrlPipe } from '../../shared/safe-url.pipe';
 
@@ -11,8 +11,8 @@ import { SafeUrlPipe } from '../../shared/safe-url.pipe';
   styleUrl: './mock-posts.component.scss'
 })
 export class MockPostsComponent {
-  @Input() post: sheduleInCalendarPost;
-  @Output() edit = new EventEmitter<sheduleInCalendarPost>();
+  @Input() post: scheduleInCalendarPost;
+  @Output() edit = new EventEmitter<scheduleInCalendarPost>();
   @Output() closePreview = new EventEmitter<any>();
   @Output() deletePost = new EventEmitter<any>();
 
