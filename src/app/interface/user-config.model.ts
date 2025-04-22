@@ -15,8 +15,8 @@ export interface UserConfig {
 
 export interface sheduleInCalendarPost {
   title: string,
-  clientId: string, // id do cliente
-  url: string, // novo campo -> usuário pode colocar uma url para a imagem ou video
+  clientId: string,
+  url: string,
   description: string,
   hashtags: string[],
   links: string[],
@@ -26,6 +26,7 @@ export interface sheduleInCalendarPost {
   remindBefore: number,
   createdAt: Date
   updatedAt: Date
+  id: string,
 }
 
 export interface ListClientsInterface {

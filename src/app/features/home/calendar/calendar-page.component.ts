@@ -1,23 +1,29 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { CreatePostModalComponent } from "./components/calendar-modal/create-post-modal.component";
-import { CalendarComponent } from "./components/calendar/calendar.component";
-import { ListClientsInterface, sheduleInCalendarPost } from "../../../interface/user-config.model";
-import { CalendarPostService } from "../../../shared/services/calendar-post.service/calendar-post.service";
 import { Observable } from "rxjs";
+import { CalendarComponent } from "./components/calendar/calendar.component";
+import { PostSidebarComponent } from "../../post-sidebar/post-sidebar.component";
+import { MockPostsComponent } from "../../mock-posts/mock-posts.component";
+import { CalendarPostService } from "../../../shared/services/calendar-post.service/calendar-post.service";
+import { ListClientsInterface, sheduleInCalendarPost } from "../../../interface/user-config.model";
 
 @Component({
   selector: 'app-calendar-page',
   standalone: true,
-  imports: [CommonModule, CalendarComponent, CreatePostModalComponent],
+  imports: [CommonModule, CalendarComponent, MockPostsComponent, PostSidebarComponent],
   templateUrl: './calendar-page.component.html',
   styleUrls: ['./calendar-page.component.scss']
 })
 export class CalendarPageComponent {
-  @Input() listClients: Observable<ListClientsInterface[]>;
+  @Input() listClients!: Observable<ListClientsInterface[]>;
+  @ViewChild('postSidebar') postSidebar!: PostSidebarComponent;
   events: any[] = [];
-  showModal = false;
-  selectedPost: (sheduleInCalendarPost & { id: string }) | null = null;
+  openPost!: sheduleInCalendarPost;
+  selectedPost: sheduleInCalendarPost | null = null;
+  openPreview = false;
+
+  private deletePostId: string | null = null;
+  confirmModalInstance: any = null;
 
   constructor(private calendarService: CalendarPostService) { }
 
@@ -35,7 +41,6 @@ export class CalendarPageComponent {
         allDay: false,
         id: post.id
       }));
-      console.log('[DEBUG] Eventos carregados:', this.events);
     } catch (error) {
       console.error('[ERRO] Falha ao carregar eventos:', error);
     }
@@ -45,90 +50,111 @@ export class CalendarPageComponent {
     if (typeof timestamp?.toDate === 'function') {
       return timestamp.toDate();
     }
-
     if (timestamp?.seconds) {
       return new Date(timestamp.seconds * 1000);
     }
-
     return new Date();
-  }
-
-  async deletePost(postId: string) {
-    try {
-      await this.calendarService.deletePost(postId);
-      this.events = this.events.filter(e => e.id !== postId);
-      this.showModal = false;
-      this.selectedPost = null;
-    } catch (error) {
-      console.error('[ERRO] Falha ao deletar post:', error);
-    }
-  }
-
-  async editPost(postId: string, updatedData: Partial<sheduleInCalendarPost>, post: sheduleInCalendarPost & { id: string }) {
-    await this.calendarService.updatePost(postId, updatedData);
-    await this.loadEvents();
-    this.selectedPost = post;
-    this.showModal = true;
-  }
-
-  async onPostUpdated(event: { id: string, changes: Partial<sheduleInCalendarPost> }) {
-    await this.calendarService.updatePost(event.id, event.changes);
-    this.showModal = false;
-    this.selectedPost = null;
-    await this.loadEvents();
   }
 
   async onPostCreated(post: Omit<sheduleInCalendarPost, 'createdAt' | 'updatedAt'>) {
     try {
-      console.log('[DEBUG] Post recebido para criação:', post);
       await this.calendarService.addPost(post);
-      console.log('[DEBUG] Post enviado para o serviço com sucesso');
-
-      this.events = [
-        ...this.events,
-        {
-          clientId: post.clientId,
-          title: post.title,
-          start: post.date
-        }
-      ];
-
-      this.showModal = false;
+      this.events = [...this.events, {
+        clientId: post.clientId,
+        title: post.title,
+        start: post.date
+      }];
+      this.postSidebar.close();
     } catch (error) {
       console.error('[ERRO] Falha ao adicionar post:', error);
     }
   }
 
-  async onEventClicked(event: string) {
-    const postId = event;
+  async onPostUpdated(event: { id: string, changes: Partial<sheduleInCalendarPost> }) {
+    try {
+      await this.calendarService.updatePost(event.id, event.changes);
+      await this.loadEvents();
+      this.selectedPost = null;
+      this.postSidebar.close();
+    } catch (error) {
+      console.error('[ERRO] Falha ao atualizar post:', error);
+    }
+  }
 
+  async onEventClicked(postId: string) {
     if (!postId || typeof postId !== 'string') {
-      this.showModal = true;
+      this.postSidebar.open();
       return;
     }
 
     try {
       const post = await this.calendarService.getPostById(postId);
-      this.selectedPost = post;
-      this.showModal = true;
+      this.selectedPost = {
+        ...post,
+        date: this.convertTimestampToDate(post.date),
+        end: this.convertTimestampToDate(post.end)
+      };
+      this.onEditPost(this.selectedPost);
     } catch (error) {
+      console.error('[ERRO] ao carregar post:', error);
     }
+  }
+
+  onEditPost(post: sheduleInCalendarPost) {
+    this.openPost = post;
+    this.openPreview = true;
+    this.postSidebar.open();
   }
 
   onDateClicked(date?: Date) {
     if (!date) {
-      this.showModal = false;
+      this.postSidebar.close();
       return;
     }
 
-    const post = this.events.find(event => event.start.isSame(date, 'day'));
+    const post = this.events.find(event => new Date(event.start).toDateString() === date.toDateString());
 
-    if (post) {
-      this.selectedPost = post;
-      this.showModal = true;
-    } else {
-      this.selectedPost = null;
-      this.showModal = true;
+    this.selectedPost = post ?? null;
+    this.postSidebar.open();
+  }
+
+  closePreview() {
+    this.openPreview = false;
+    this.openPost = null!;
+  }
+
+  openDeleteConfirmationModal(postId: string) {
+    this.deletePostId = postId;
+    const modalElement = document.getElementById('confirmDeleteModal');
+    if (modalElement) {
+      this.confirmModalInstance = new (window as any).bootstrap.Modal(modalElement);
+      this.confirmModalInstance.show();
     }
   }
+
+  async delete() {
+    if (!this.deletePostId) return;
+
+    try {
+      await this.calendarService.deletePost(this.deletePostId);
+      this.events = this.events.filter(e => e.id !== this.deletePostId);
+      this.selectedPost = null;
+      this.postSidebar.close();
+    } catch (error) {
+      console.error('[ERRO] Falha ao deletar post:', error);
+    } finally {
+      this.confirmModalInstance?.hide();
+      this.deletePostId = null;
+    }
+  }
+
+  handleDelete() {
+    const modal = document.getElementById('confirmDeleteModal');
+    if (modal) {
+      const bsModal = new (window as any).bootstrap.Modal(modal);
+      bsModal.show();
+    }
+  }
+
+
 }

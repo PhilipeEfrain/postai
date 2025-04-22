@@ -1,0 +1,12 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="postSidebar" aria-labelledby="postSidebarLabel" #offcanvasRef>
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="postSidebarLabel">
+            {{ postToEdit ? 'Editar Post' : 'Novo Post' }}
+        </h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+    </div>
+    <div class="offcanvas-body">
+        <app-create-post-form [postToEdit]="postToEdit"></app-create-post-form>
+
+    </div>
+</div>

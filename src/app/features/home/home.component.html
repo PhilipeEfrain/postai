@@ -1,21 +1,11 @@
-<div>
-  <h1>Minhas Ideias</h1>
-  <button (click)="logout()">Sair</button>
-</div>
+<section>
+  <button type="button" class="btn btn-primary position-absolute top-0 end-0 m-3" (click)="settingsSidebar.open()">
+    <i class="bi bi-gear-fill"></i>
+  </button>
 
+  <app-settings-sidebar #settingsSidebar (clients)="handleClients($event)"></app-settings-sidebar>
 
-<ul>
-  <li *ngFor="let client of clients$ | async">
-    {{ client.text }} — {{ client.date.toDate() | date:'short' }}
-  </li>
-</ul>
-
-<div>
-  <input [(ngModel)]="newClient" placeholder="Nova ideia" />
-  <button (click)="add()">Adicionar novo cliente</button>
-</div>
-
-<app-user-config />
-
-<!-- Calendário interativo -->
-<app-calendar-page [listClients]="clients$" />
+  <div class="container">
+    <app-calendar-page [listClients]="clients$" />
+  </div>
+</section>

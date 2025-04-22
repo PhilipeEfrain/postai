@@ -1,0 +1,34 @@
+// /* modal.component.scss */
+// .modal-backdrop {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     z-index: 1000;
+//     width: 100vw;
+//     height: 100vh;
+//     background-color: rgba(0, 0, 0, 0.5); // fundo escuro
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//   }
+  
+//   .modal-content {
+//     position: relative;
+//     background-color: #fff;
+//     border-radius: 8px;
+//     padding: 2rem;
+//     max-width: 500px;
+//     width: 90%;
+//     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+//   }
+  
+//   .close-button {
+//     position: absolute;
+//     top: 1rem;
+//     right: 1rem;
+//     background: transparent;
+//     border: none;
+//     font-size: 1.5rem;
+//     cursor: pointer;
+//   }
+  

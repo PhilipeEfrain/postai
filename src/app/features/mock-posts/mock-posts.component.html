@@ -1,0 +1,67 @@
+<section *ngIf="post" class="card shadow-sm rounded-4 p-3 mb-4" style="max-width: 500px; margin: auto;">
+    <h5 class="mb-3 text-center text-muted">Pré-visualização do post</h5>
+
+    <section *ngIf="post.url">
+        <ng-container [ngSwitch]="getMediaType(post.url)">
+
+            <!-- YouTube -->
+            <iframe *ngSwitchCase="'youtube'" width="100%" height="315" [src]="post.url | safeUrl" frameborder="0"
+                allowfullscreen class="rounded-3 mb-3">
+            </iframe>
+
+            <!-- Imagem (normal ou Google Drive) -->
+            <img *ngSwitchCase="'image'" [src]="post.url" class="img-fluid rounded-3 w-100 mb-3" alt="Post image" />
+
+            <img *ngSwitchCase="'drive-image'" [src]="getDisplayUrl(post.url)" class="img-fluid rounded-3 w-100 mb-3"
+                alt="Post image from drive" />
+            <!-- Vídeo (normal ou Google Drive) -->
+            <video *ngSwitchCase="'video'" [src]="post.url" class="w-100 rounded-3 mb-3" controls>
+            </video>
+
+            <video *ngSwitchCase="'drive-video'" [src]="getDisplayUrl(post.url)" class="w-100 rounded-3 mb-3" controls>
+            </video>
+
+        </ng-container>
+
+        <div class="mb-2">
+            Link da imagem/vídeo: <a [href]="post.url" target="_blank" class="text-primary text-decoration-underline">
+                {{ post.url }}
+            </a>
+        </div>
+    </section>
+
+    <!-- Título e descrição -->
+    <div class="mb-3">
+        <h5 class="fw-bold">{{ post.title }}</h5>
+        <p class="text-muted mb-2">{{ post.description }}</p>
+    </div>
+
+    <!-- Links -->
+    <div *ngIf="post.links?.length" class="mb-3">
+        <div *ngFor="let link of post.links" class="mb-1">
+            <a [href]="link" target="_blank" class="text-primary text-decoration-underline">
+                {{ link }}
+            </a>
+        </div>
+    </div>
+
+    <!-- Tags -->
+    <div *ngIf="post.hashtags?.length" class="mb-3">
+        <div class="d-flex flex-wrap gap-2">
+            <span *ngFor="let tag of post.hashtags" class="badge bg-secondary">
+                {{ tag }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Data -->
+    <div class="text-end text-muted">
+        <small>{{ post.date | date: 'dd/MM/yyyy' }}</small>
+    </div>
+
+    <section class="mock-post">
+        <button class="btn btn-outline-primary mt-3" (click)="handleEdit()">Editar</button>
+        <button class="btn btn-outline-danger mt-3" (click)="handleDelete()">Deletar postagem</button>
+        <button class="btn btn-outline-danger mt-3" (click)="handleClose()">Fechar prévia</button>
+    </section>
+</section>

@@ -1,0 +1,66 @@
+<section>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="mb-3">
+      <label class="form-label">Cliente:</label>
+      <select formControlName="clientId" class="form-select">
+        <option *ngFor="let client of clients$" [value]="client.id">
+          {{ client.text }}
+        </option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Título:</label>
+      <input formControlName="title" type="text" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Descrição:</label>
+      <textarea formControlName="description" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Hashtags:</label>
+      <input formControlName="hashtags" type="text" class="form-control" placeholder="#exemplo, #negócio" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Links:</label>
+      <input formControlName="links" type="text" class="form-control" placeholder="https://..." />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">URL da imagem/vídeo:</label>
+      <input formControlName="url" type="url" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Tipo:</label>
+      <select formControlName="type" class="form-select">
+        <option value="feed">Feed</option>
+        <option value="story">Story</option>
+        <option value="video">Vídeo</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Data:</label>
+      <input formControlName="date" type="datetime-local" step="900" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Lembrar antes (dias):</label>
+      <input formControlName="remindBefore" type="number" class="form-control" />
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+      <button *ngIf="postToEdit" type="button" class="btn btn-outline-danger" (click)="delete()">Deletar</button>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">
+          {{ postToEdit ? 'Salvar Alterações' : 'Criar Postagem' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</section>

@@ -4,17 +4,18 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ListClientsInterface, sheduleInCalendarPost } from '../../../../../interface/user-config.model';
 import { Observable, take } from 'rxjs';
+import { CalendarPostService } from '../../../../../shared/services/calendar-post.service/calendar-post.service';
 
 @Component({
-  selector: 'app-create-post-modal',
+  selector: 'app-create-post-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './create-post-modal.component.html',
-  styleUrls: ['./create-post-modal.component.scss']
+  templateUrl: './create-post-form.component.html',
+  styleUrls: ['./create-post-form.component.scss']
 })
 export class CreatePostModalComponent implements OnChanges {
   @Input() listClients: Observable<ListClientsInterface[]>;
-  @Input() postToEdit: (sheduleInCalendarPost & { id: string }) | null = null;
+  @Input() postToEdit: sheduleInCalendarPost | null = null;
   @Output() postCreated = new EventEmitter<any>();
   @Output() postUpdated = new EventEmitter<{ id: string; changes: Partial<sheduleInCalendarPost> }>();
   @Output() modalClosed = new EventEmitter<void>();
@@ -29,16 +30,22 @@ export class CreatePostModalComponent implements OnChanges {
     links: [''],
     url: [''],
     type: ['feed', Validators.required],
-    date: [null as Date | null, Validators.required],
+    date: ['', Validators.required],
+    end: [null as Date | null], // <--- adicionado
     remindBefore: [1, Validators.required],
   });
+  selectedPost: null;
+  postSidebar: any;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private calendarService: CalendarPostService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.createListClients()
+    this.createListClients();
     if (changes['postToEdit'] && this.postToEdit) {
       const post = this.postToEdit;
+
+      const formattedDate = this.formatDate(post.date); // Formatar a data
+
       this.form.patchValue({
         title: post.title,
         clientId: post.clientId,
@@ -47,10 +54,20 @@ export class CreatePostModalComponent implements OnChanges {
         links: post.links?.join(', '),
         url: post.url,
         type: post.type,
-        date: post.date,
+        date: formattedDate,
         remindBefore: post.remindBefore
       });
     }
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
   createListClients() {
@@ -80,6 +97,7 @@ export class CreatePostModalComponent implements OnChanges {
       date: startDate,
       end: endDate,
       remindBefore: Number(value.remindBefore ?? 1),
+      clientId: value.clientId,
     };
 
     if (this.postToEdit) {
@@ -91,17 +109,17 @@ export class CreatePostModalComponent implements OnChanges {
     this.form.reset();
   }
 
-
-
-
-
   delete() {
     if (this.postToEdit?.id) {
       this.postDeleted.emit(this.postToEdit.id);
     }
   }
 
-  closeModal() {
+  loadEvents() {
+    throw new Error('Method not implemented.');
+  }
+
+  close() {
     this.modalClosed.emit();
     this.form.reset();
   }

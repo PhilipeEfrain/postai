@@ -5,6 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptBR from '@fullcalendar/core/locales/pt-br';
+import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 
 
 @Component({
@@ -15,24 +16,25 @@ import ptBR from '@fullcalendar/core/locales/pt-br';
   styleUrls: ['./calendar.component.scss'],
 })
 
-export class CalendarComponent implements OnInit {
+export class CalendarComponent {
   @Output() dateSelected = new EventEmitter<any>();
   @Input() events: EventInput[] = [];
-  calendarPlugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
+  calendarPlugins = [dayGridPlugin, timeGridPlugin, interactionPlugin, bootstrap5Plugin];
 
   calendarOptions: CalendarOptions = {
     locale: ptBR,
+    themeSystem: 'bootstrap5',
     initialView: 'dayGridMonth',
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    plugins: this.calendarPlugins,
     dateClick: this.handleDateClick.bind(this),
     events: this.events,
     slotDuration: '00:15:00',
-    editable: true,
+    editable: false,
     eventClick: this.handleEventClick.bind(this),
     headerToolbar: {
       left: 'prev,next',
       center: 'title',
-      right: 'timeGridWeek,timeGridDay' // user can switch between the two
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
     views: {
       timeGridFourDay: {
@@ -42,20 +44,12 @@ export class CalendarComponent implements OnInit {
     }
   };
 
-  constructor() { }
 
-  ngOnInit(): void {
-    // Qualquer lógica adicional necessária durante a inicialização do componente
-  }
-
-  // Função de clique na data (pode ser personalizada conforme necessidade)
   handleDateClick(event: any) {
-    this.dateSelected.emit(event.date);  // Passa a data clicada para o componente pai
+    this.dateSelected.emit(event.date);
   }
 
   handleEventClick(clickInfo: any) {
-    // Emite os dados do evento para abrir o modal de edição
-    console.log('enviei', clickInfo.event.id);
     this.dateSelected.emit(clickInfo.event.id);
   }
 
