@@ -1,10 +1,20 @@
-// src\app\features\home\calendar\components\calendar-modal\create-post-modal.component.ts
-import { Component, EventEmitter, Input, OnChanges, SimpleChanges, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ListClientsInterface, scheduleInCalendarPost } from '../../../../../interface/user-config.model';
 import { Observable, take } from 'rxjs';
-import { CalendarPostService } from '../../../../../shared/services/calendar-post.service/calendar-post.service';
+import flatpickr from 'flatpickr';
+import { Portuguese } from 'flatpickr/dist/l10n/pt';
 
 @Component({
   selector: 'app-create-post-form',
@@ -13,14 +23,17 @@ import { CalendarPostService } from '../../../../../shared/services/calendar-pos
   templateUrl: './create-post-form.component.html',
   styleUrls: ['./create-post-form.component.scss']
 })
-export class CreatePostModalComponent implements OnChanges {
-  @Input() listClients: Observable<ListClientsInterface[]>;
+export class CreatePostModalComponent implements AfterViewInit, OnChanges {
+  @Input() listClients!: Observable<ListClientsInterface[]>;
   @Input() postToEdit: scheduleInCalendarPost | null = null;
-  @Output() postCreated = new EventEmitter<any>();
-  @Output() postUpdated = new EventEmitter<{ id: string; changes: Partial<scheduleInCalendarPost> }>();
+  @Output() created = new EventEmitter<any>();
+  @Output() updated = new EventEmitter<{ id: string; changes: Partial<scheduleInCalendarPost> }>();
   @Output() modalClosed = new EventEmitter<void>();
   @Output() postDeleted = new EventEmitter<string>();
-  clients$: ListClientsInterface[]
+
+  @ViewChild('dateInput') dateInputRef!: ElementRef;
+
+  clients$: ListClientsInterface[] = [];
 
   form = this.fb.group({
     title: ['', Validators.required],
@@ -30,21 +43,33 @@ export class CreatePostModalComponent implements OnChanges {
     links: [''],
     url: [''],
     type: ['feed', Validators.required],
-    date: ['', Validators.required],
-    end: [null as Date | null], // <--- adicionado
+    date: [null as Date | null, Validators.required],
+    end: [null as Date | null],
     remindBefore: [1, Validators.required],
   });
-  selectedPost: null;
-  postSidebar: any;
 
-  constructor(private fb: FormBuilder, private calendarService: CalendarPostService) { }
+  constructor(private fb: FormBuilder) { }
+
+  ngAfterViewInit() {
+    flatpickr(this.dateInputRef.nativeElement, {
+      enableTime: true,                 // Ativa hora
+      dateFormat: 'd/m/Y H:i',         // Formato de exibição: 22/04/2025 14:30
+      time_24hr: true,                 // Formato 24h (sem AM/PM)
+      minuteIncrement: 15,             // ⏱ Intervalo de 15 em 15 minutos
+      locale: Portuguese,              // Localização em pt-BR
+      onChange: ([selectedDate]) => {
+        this.form.get('date')?.setValue(selectedDate);
+      }
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.createListClients();
+
     if (changes['postToEdit'] && this.postToEdit) {
       const post = this.postToEdit;
-
-      const formattedDate = this.formatDate(post.date); // Formatar a data
+      const formattedDate = post.date instanceof Date ? post.date : new Date(post.date);
+      const endDate = new Date(formattedDate.getTime() + 15 * 60 * 1000);
 
       this.form.patchValue({
         title: post.title,
@@ -55,27 +80,15 @@ export class CreatePostModalComponent implements OnChanges {
         url: post.url,
         type: post.type,
         date: formattedDate,
-        remindBefore: post.remindBefore
+        end: endDate,
+        remindBefore: post.remindBefore,
       });
     }
   }
 
-  formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  }
-
   createListClients() {
-    if (!this.listClients) return;
-
-    this.listClients.pipe(take(1)).subscribe((resp) => {
+    this.listClients?.pipe(take(1)).subscribe((resp) => {
       this.clients$ = resp;
-
       if (resp.length === 1) {
         this.form.get('clientId')?.setValue(resp[0].id);
       }
@@ -83,33 +96,28 @@ export class CreatePostModalComponent implements OnChanges {
   }
 
   submit() {
-    console.log('submit', this.form);
-    console.log('submit', this.form.value);
     if (this.form.invalid) return;
 
     const value = this.form.value;
-
-    const startDate = new Date(value.date); // <-- aqui é a correção
-    const endDate = new Date(startDate.getTime() + 15 * 60 * 1000); // +15 minutos
+    const startDate = new Date(value.date!);
+    const endDate = new Date(startDate.getTime() + 15 * 60 * 1000);
 
     const post: Partial<scheduleInCalendarPost> = {
-      title: value.title ?? '',
+      title: value.title!,
       description: value.description ?? '',
-      hashtags: value.hashtags?.split(',').map((h: string) => h.trim()).filter(Boolean) ?? [],
-      links: value.links?.split(',').map((l: string) => l.trim()).filter(Boolean) ?? [],
+      hashtags: value.hashtags?.split(',').map(h => h.trim()).filter(Boolean) ?? [],
+      links: value.links?.split(',').map(l => l.trim()).filter(Boolean) ?? [],
       url: value.url ?? '',
-      type: value.type ?? 'feed',
+      type: value.type!,
       date: startDate,
       end: endDate,
       remindBefore: Number(value.remindBefore ?? 1),
-      clientId: value.clientId,
+      clientId: value.clientId!,
     };
 
-    if (this.postToEdit) {
-      this.postUpdated.emit({ id: this.postToEdit.id, changes: post });
-    } else {
-      this.postCreated.emit(post);
-    }
+    this.postToEdit
+      ? this.updated.emit({ id: this.postToEdit.id, changes: post })
+      : this.created.emit(post);
 
     this.form.reset();
   }
@@ -118,10 +126,6 @@ export class CreatePostModalComponent implements OnChanges {
     if (this.postToEdit?.id) {
       this.postDeleted.emit(this.postToEdit.id);
     }
-  }
-
-  loadEvents() {
-    throw new Error('Method not implemented.');
   }
 
   close() {

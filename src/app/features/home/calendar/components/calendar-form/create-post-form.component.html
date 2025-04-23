@@ -47,8 +47,14 @@
 
     <div class="mb-3">
       <label class="form-label">Data:</label>
-      <input formControlName="date" type="datetime-local" step="900" class="form-control" />
+      <input type="text" #dateInput formControlName="date" class="form-control" />
     </div>
+
+    <!-- <div class="mb-3">
+      <label class="form-label">Data:</label>
+      <input id="dateInput" formControlName="date" class="form-control" />
+      <input formControlName="date" type="datetime-local" step="900" class="form-control" /> 
+    </div> -->
 
     <div class="mb-3">
       <label class="form-label">Lembrar antes (dias):</label>
@@ -58,7 +64,7 @@
     <div class="d-flex justify-content-between mt-4">
       <div class="d-flex gap-2">
         <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" (disable)="form.invalid">
           {{ postToEdit ? 'Salvar Alterações' : 'Criar Postagem' }}
         </button>
       </div>

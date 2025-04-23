@@ -1,4 +1,5 @@
-<app-post-sidebar #postSidebar [postToEdit]="selectedPost" [listClients]="listClients"></app-post-sidebar>
+<app-post-sidebar #postSidebar [postToEdit]="selectedPost" [listClients]="listClients"
+  (postCreated)="onPostCreated($event)" (postUpdated)="onPostUpdated($event)"></app-post-sidebar>
 <section class="row">
   <!-- Calendário com ngClass condicional -->
   <div [ngClass]="openPreview ? 'calendar-page col-12 col-md-8' : 'calendar-page col-12 col-md-12'">

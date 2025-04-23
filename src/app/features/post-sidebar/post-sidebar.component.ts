@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CreatePostModalComponent } from '../home/calendar/components/calendar-form/create-post-form.component';
 import { ListClientsInterface, scheduleInCalendarPost } from '../../interface/user-config.model';
 import { Observable } from 'rxjs';
@@ -13,7 +13,8 @@ import { Observable } from 'rxjs';
 export class PostSidebarComponent implements AfterViewInit {
   @Input() postToEdit?: scheduleInCalendarPost;
   @Input() listClients!: Observable<ListClientsInterface[]>;
-
+  @Output() postCreated = new EventEmitter<any>();
+  @Output() postUpdated = new EventEmitter<{ id: string; changes: Partial<scheduleInCalendarPost> }>();
   @ViewChild('offcanvasRef') offcanvasRef!: ElementRef;
 
   private offcanvasInstance: any;
@@ -28,5 +29,15 @@ export class PostSidebarComponent implements AfterViewInit {
 
   close() {
     this.offcanvasInstance.hide();
+  }
+
+  createPost(post: Omit<scheduleInCalendarPost, 'createdAt' | 'updatedAt'>) {
+    this.postCreated.emit(post);
+    this.close();
+  }
+
+  updatePost(post: { id: string; changes: Partial<scheduleInCalendarPost> }) {
+    this.postUpdated.emit(post);
+    this.close();
   }
 }
