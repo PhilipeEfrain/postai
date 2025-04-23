@@ -1,21 +1,36 @@
-<mat-card class="login-card">
-  <mat-card-title>Login</mat-card-title>
-  <mat-card-content>
-    <form (ngSubmit)="login()">
-      <mat-form-field appearance="fill" class="full-width">
-        <input matInput placeholder="Usuário" [(ngModel)]="email" name="email" required />
-      </mat-form-field>
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+    <h4 class="card-title text-center mb-3">Login</h4>
+    <div class="card-body">
+      <form (ngSubmit)="login()">
+        <div class="mb-3">
+          <label for="email" class="form-label">Usuário</label>
+          <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email" required />
+        </div>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <input matInput placeholder="Senha" type="password" [(ngModel)]="password" name="password" required />
-      </mat-form-field>
+        <div class="mb-3">
+          <label for="password" class="form-label">Senha</label>
+          <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" required />
+        </div>
 
-      <button class="btn-login-primary" type="submit">
-        Entrar
-      </button>
-      <button class="btn-login-outline" (click)="register()">
-        Criar conta
-      </button>
-    </form>
-  </mat-card-content>
-</mat-card>
+        <div class="d-grid gap-2">
+          <div class="text-center mt-2">
+            <a href="#" (click)="forgotPassword()" class="text-decoration-none">Esqueci minha senha</a>
+          </div>
+          <button type="submit" class="btn btn-primary">Entrar</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="register()">Criar conta</button>
+          <button type="button"
+            class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2"
+            (click)="loginWithGoogle()">
+            <img src="https://img.icons8.com/color/24/000000/google-logo.png" alt="Google logo" />
+            <span>Entrar com Google</span>
+          </button>
+        </div>
+      </form>
+
+
+
+    </div>
+
+  </div>
+</div>

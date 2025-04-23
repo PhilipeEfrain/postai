@@ -6,12 +6,12 @@ import { CalendarPageComponent } from './calendar/calendar-page.component';
 import { SettingsSidebarComponent } from './settings-sidebar/settings-sidebar.component';
 import { Observable, of } from 'rxjs';
 import { ListClientsInterface } from '../../interface/user-config.model';
-import { MockPostsComponent } from '../mock-posts/mock-posts.component';
+import { FeedbackButtonComponent } from '../../shared/feedback-button/feedback-button.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, CalendarPageComponent, SettingsSidebarComponent, MockPostsComponent],
+  imports: [CommonModule, FormsModule, CalendarPageComponent, SettingsSidebarComponent, FeedbackButtonComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })

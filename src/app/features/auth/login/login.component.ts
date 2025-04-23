@@ -61,4 +61,50 @@ export class LoginComponent {
   register() {
     return this.router.navigate(['/register']);
   }
+
+  async loginWithGoogle() {
+    try {
+      await this.authService.loginWithGoogle();
+
+      this.modalService.showModal({
+        type: 'success',
+        title: 'Login com Google',
+        message: 'Você está agora logado.',
+      });
+
+      this.router.navigate(['/home']);
+    } catch (error: any) {
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro ao logar com Google',
+        message: error.message || 'Algo deu errado.',
+      });
+    }
+  }
+  async forgotPassword() {
+    if (!this.email) {
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Informe seu e-mail',
+        message: 'Digite o e-mail para enviar o link de recuperação.',
+      });
+      return;
+    }
+
+    try {
+      await this.authService.sendPasswordResetEmail(this.email);
+      this.modalService.showModal({
+        type: 'success',
+        title: 'E-mail enviado!',
+        message: 'Verifique sua caixa de entrada para redefinir a senha.',
+      });
+    } catch (error: any) {
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: error.message || 'Não foi possível enviar o e-mail.',
+      });
+    }
+  }
+
 }

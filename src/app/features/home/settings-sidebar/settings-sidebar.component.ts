@@ -107,4 +107,18 @@ export class SettingsSidebarComponent implements OnInit, AfterViewInit {
       })
       );
   }
+
+  changePassword() {
+    this.modalService.showModal({
+      type: 'success',
+      title: 'Redefinir senha',
+      message: 'Enviamos um link para seu e-mail para redefinir a senha.',
+    });
+
+    const user = this.auth.currentUser;
+    if (user?.email) {
+      this.authService.sendPasswordResetEmail(user.email);
+    }
+  }
+
 }

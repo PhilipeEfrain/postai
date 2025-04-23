@@ -1,59 +1,70 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { createUserWithEmailAndPassword, Auth } from 'firebase/auth';
-import { Inject } from '@angular/core'; // Import necessário para usar @Inject
+import { Component, Inject, OnInit } from '@angular/core';
+import {
+  FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn
+} from '@angular/forms';
+import { createUserWithEmailAndPassword, Auth, sendEmailVerification } from 'firebase/auth';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalService } from '../../../shared/modal.service';
 import { AUTH_TOKEN } from '../../../core/firebase.tokens';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
-  imports: [ReactiveFormsModule,
-    CommonModule,
-    FormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule
-  ],
-
 })
 export class RegisterComponent implements OnInit {
-  form!: FormGroup<any>
-
+  form!: FormGroup;
+  isLoading = false;
+  showPassword = false;
   constructor(
     private fb: FormBuilder,
     private modalService: ModalService,
-    @Inject(AUTH_TOKEN) private auth: Auth,
+    private router: Router,
+    @Inject(AUTH_TOKEN) private auth: Auth
   ) { }
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-    });
+    this.form = this.fb.group(
+      {
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validators: this.passwordsMatchValidator }
+    );
   }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+    const password = group.get('password')?.value;
+    const confirm = group.get('confirmPassword')?.value;
+    return password === confirm ? null : { passwordMismatch: true };
+  };
 
   async register() {
     const { email, password } = this.form.value;
 
     try {
-      // Cria o usuário no Firebase
-      await createUserWithEmailAndPassword(this.auth, email, password);
-      
-      // Exibe o modal de sucesso
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+
+      await sendEmailVerification(userCredential.user);
+
       this.modalService.showModal({
         type: 'success',
-        title: 'Cadastro realizado!',
-        message: 'Usuário cadastrado com sucesso.',
+        title: 'Verifique seu e-mail',
+        message: 'Enviamos um link de verificação para seu e-mail. Verifique antes de prosseguir.',
       });
+
+      this.router.navigate(['/login']);
+
     } catch (error: any) {
-      // Exibe o modal de erro
       this.modalService.showModal({
         type: 'error',
         title: 'Erro no cadastro',
@@ -61,4 +72,6 @@ export class RegisterComponent implements OnInit {
       });
     }
   }
+
+
 }

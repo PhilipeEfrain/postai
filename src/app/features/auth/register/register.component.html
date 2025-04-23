@@ -1,18 +1,58 @@
-<mat-card class="register-card">
-  <mat-card-title>Novo usuário</mat-card-title>
-  <mat-card-content>
-  <form [formGroup]="form" (ngSubmit)="register()">
-    <mat-form-field appearance="fill" class="full-width">
-      <input matInput placeholder="email" type="email" formControlName="email" />
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="full-width">
-      <input matInput placeholder="E-mail" type="password" formControlName="password" />
-    </mat-form-field>
-    <button class="btn-login-primary" type="submit" [disabled]="form.invalid">
-      Cadastrar
-    </button>
-  </form>
-  </mat-card-content>
-</mat-card>
-  
-  
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+    <h4 class="card-title text-center mb-3">Novo usuário</h4>
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="register()" novalidate>
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="email" formControlName="email"
+            [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched" />
+          <div class="invalid-feedback" *ngIf="form.get('email')?.errors?.['required']">
+            E-mail é obrigatório.
+          </div>
+          <div class="invalid-feedback" *ngIf="form.get('email')?.errors?.['email']">
+            E-mail inválido.
+          </div>
+        </div>
+
+        <!-- Senha -->
+        <div class="mb-3">
+          <label for="password" class="form-label">Senha</label>
+          <div class="input-group">
+            <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Senha"
+              formControlName="password" id="password" />
+            <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+              <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </button>
+          </div>
+
+          <div class="invalid-feedback d-block" *ngIf="form.get('password')?.errors?.['required']">
+            Senha é obrigatória.
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="form.get('password')?.errors?.['minlength']">
+            Mínimo de 6 caracteres.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="confirmPassword" class="form-label">Confirmar senha</label>
+          <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword"
+            [class.is-invalid]="form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.touched" />
+          <div class="invalid-feedback" *ngIf="form.get('confirmPassword')?.errors?.['required']">
+            Confirmação é obrigatória.
+          </div>
+          <div class="invalid-feedback" *ngIf="form.hasError('passwordMismatch')">
+            As senhas não coincidem.
+          </div>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid || isLoading">
+            {{ isLoading ? 'Cadastrando...' : 'Cadastrar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

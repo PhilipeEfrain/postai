@@ -1,0 +1,29 @@
+<!-- feedback-modal.component.html -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Enviar feedback</h5>
+                <button type="button" class="btn-close" (click)="close()"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="sendFeedback()">
+                    <div class="mb-3">
+                        <label class="form-label">Seu nome</label>
+                        <input type="text" class="form-control" [(ngModel)]="name" name="name" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Título</label>
+                        <input type="text" class="form-control" [(ngModel)]="title" name="title" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mensagem</label>
+                        <textarea class="form-control" [(ngModel)]="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="showModal"></div>

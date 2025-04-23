@@ -52,11 +52,11 @@ export class CreatePostModalComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit() {
     flatpickr(this.dateInputRef.nativeElement, {
-      enableTime: true,                 // Ativa hora
-      dateFormat: 'd/m/Y H:i',         // Formato de exibição: 22/04/2025 14:30
-      time_24hr: true,                 // Formato 24h (sem AM/PM)
-      minuteIncrement: 15,             // ⏱ Intervalo de 15 em 15 minutos
-      locale: Portuguese,              // Localização em pt-BR
+      enableTime: true,
+      dateFormat: 'd/m/Y H:i',
+      time_24hr: true,
+      minuteIncrement: 15,
+      locale: Portuguese,
       onChange: ([selectedDate]) => {
         this.form.get('date')?.setValue(selectedDate);
       }
