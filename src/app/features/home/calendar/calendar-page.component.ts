@@ -6,6 +6,7 @@ import { PostSidebarComponent } from "../../post-sidebar/post-sidebar.component"
 import { MockPostsComponent } from "../../mock-posts/mock-posts.component";
 import { CalendarPostService } from "../../../shared/services/calendar-post.service/calendar-post.service";
 import { ListClientsInterface, scheduleInCalendarPost } from "../../../interface/user-config.model";
+import { ModalService } from "../../../shared/modal.service";
 
 @Component({
   selector: 'app-calendar-page',
@@ -25,7 +26,7 @@ export class CalendarPageComponent {
   private deletePostId: string | null = null;
   confirmModalInstance: any = null;
 
-  constructor(private calendarService: CalendarPostService) { }
+  constructor(private calendarService: CalendarPostService, private modalService: ModalService) { }
 
   async ngOnInit() {
     await this.loadEvents();
@@ -42,7 +43,11 @@ export class CalendarPageComponent {
         id: post.id
       }));
     } catch (error) {
-      console.error('[ERRO] Falha ao carregar eventos:', error);
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: error.message || 'Falha ao carregar eventos.',
+      })
     }
   }
 
@@ -66,7 +71,11 @@ export class CalendarPageComponent {
       }];
       this.postSidebar.close();
     } catch (error) {
-      console.error('[ERRO] Falha ao adicionar post:', error);
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: error.message || 'Falha ao criar post.',
+      })
     }
   }
 
@@ -77,7 +86,11 @@ export class CalendarPageComponent {
       this.selectedPost = null;
       this.postSidebar.close();
     } catch (error) {
-      console.error('[ERRO] Falha ao atualizar post:', error);
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: error.message || 'Falha ao atualizar post.',
+      })
     }
   }
 
@@ -95,7 +108,11 @@ export class CalendarPageComponent {
       };
       this.onEditPost(this.selectedPost);
     } catch (error) {
-      console.error('[ERRO] ao carregar post:', error);
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: error.message || 'Falha ao carregar post.',
+      })
     }
   }
 
@@ -145,7 +162,11 @@ export class CalendarPageComponent {
       this.openPreview = false;
       this.postSidebar.close();
     } catch (error) {
-      console.error('[ERRO] Falha ao deletar post:', error);
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: error.message || 'Falha ao deletar post.',
+      })
     } finally {
       this.confirmModalInstance?.hide();
       this.deletePostId = null;

@@ -15,6 +15,7 @@ import { filter, first, switchMap } from 'rxjs/operators';
 import { FirestoreService } from '../../../core/firestore.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ModalService } from '../../../shared/modal.service';
 
 @Component({
   selector: 'app-settings-sidebar',
@@ -29,6 +30,7 @@ export class SettingsSidebarComponent implements OnInit, AfterViewInit {
 
   private auth = inject<Auth>(AUTH_TOKEN);
   private authService = inject(AuthService);
+  private modalService = inject(ModalService);
   private fs = inject(FirestoreService);
   private offcanvasInstance: any;
 
@@ -53,7 +55,11 @@ export class SettingsSidebarComponent implements OnInit, AfterViewInit {
 
   async logout() {
     await signOut(this.auth);
-    alert('Você saiu com sucesso!');
+    this.modalService.showModal({
+      type: 'success',
+      title: 'Logout realizado!',
+      message: 'Você foi desconectado com sucesso.',
+    });
   }
 
   loadClients() {
@@ -63,7 +69,7 @@ export class SettingsSidebarComponent implements OnInit, AfterViewInit {
       switchMap(() => this.fs.listClients())
     ).subscribe(clients => {
       this.clientsList = clients;
-      this.clients.emit(clients); // envia ao pai
+      this.clients.emit(clients);
     });
   }
 
@@ -74,9 +80,14 @@ export class SettingsSidebarComponent implements OnInit, AfterViewInit {
     this.fs.addClient(text)
       .then(() => {
         this.newClient = '';
-        this.loadClients(); // atualiza e emite de novo
+        this.loadClients();
       })
-      .catch(err => console.error('Erro ao adicionar cliente:', err));
+      .catch(err => this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: err || 'Erro ao adicionar cliente',
+      })
+      );
   }
 
   deleteClient(clientId: string) {
@@ -87,9 +98,13 @@ export class SettingsSidebarComponent implements OnInit, AfterViewInit {
 
     this.fs.deleteClient(clientId)
       .then(() => {
-        // Atualiza a lista local após a exclusão
         this.clientsList = this.clientsList.filter(c => c.id !== clientId);
       })
-      .catch(err => console.error('Erro ao deletar cliente:', err));
+      .catch(err => this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: err || 'Erro ao deletar cliente',
+      })
+      );
   }
 }

@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { Auth, onAuthStateChanged } from 'firebase/auth';
 import { ModalService } from '../../../shared/modal.service';
 import { AuthService } from '../../../core/auth.service';
-import { AUTH_TOKEN } from '../../../core/firebase.tokens'; 
+import { AUTH_TOKEN } from '../../../core/firebase.tokens';
 
 @Component({
   selector: 'app-login',
@@ -37,13 +37,10 @@ export class LoginComponent {
 
   async login() {
     try {
-      // 1) Faça o login e receba a credencial
       const credential = await this.authService.login(this.email, this.password);
-  
-      // 2) Aguarde o Firebase Auth confirmar o usuário
+
       onAuthStateChanged(this.auth, (user) => {
         if (user) {
-          // 3) Agora sim, modal + navegação
           this.modalService.showModal({
             type: 'success',
             title: 'Login realizado!',
@@ -53,7 +50,6 @@ export class LoginComponent {
         }
       });
     } catch (error: any) {
-      console.error('Erro ao fazer login', error);
       this.modalService.showModal({
         type: 'error',
         title: 'Erro no login',

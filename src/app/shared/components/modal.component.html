@@ -1,11 +1,18 @@
 <!-- Só mostra se tiver modalData -->
-<div *ngIf="modalData" class="modal-wrapper">
-    <div class="backdrop" (click)="onClose()"></div>
-  
-    <div class="modal" [ngClass]="modalData.type">
-      <h2>{{ modalData.title }}</h2>
-      <p>{{ modalData.message }}</p>
-      <button (click)="onClose()">Fechar</button>
+<div *ngIf="modalData" class="modal fade show" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true"
+  style="display: block;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">{{ modalData.title }}</h5>
+        <button type="button" class="btn-close" (click)="onClose()" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ modalData.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">Fechar</button>
+      </div>
     </div>
   </div>
-  
+</div>

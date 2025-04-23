@@ -4,6 +4,7 @@ import { Auth } from 'firebase/auth';
 import { collectionData } from 'rxfire/firestore';
 import { Observable } from 'rxjs';
 import { AUTH_TOKEN, FIRESTORE_TOKEN } from './firebase.tokens';
+import { ModalService } from '../shared/modal.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,13 +12,18 @@ import { AUTH_TOKEN, FIRESTORE_TOKEN } from './firebase.tokens';
 export class FirestoreService {
   constructor(
     @Inject(FIRESTORE_TOKEN) private db: Firestore,
-    @Inject(AUTH_TOKEN) private auth: Auth
+    @Inject(AUTH_TOKEN) private auth: Auth,
+    @Inject(ModalService) private modalService: ModalService
   ) { }
 
   addClient(text: string): Promise<void> {
     const user = this.auth.currentUser;
     if (!user) {
-      return Promise.reject('Usuário não autenticado');
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: 'Usuário não autenticado',
+      })
     }
 
     const clientRef = collection(this.db, `users/${user.uid}/client`);
@@ -30,7 +36,11 @@ export class FirestoreService {
   listClients(): Observable<any[]> {
     const user = this.auth.currentUser;
     if (!user) {
-      throw new Error('Usuário não autenticado');
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: 'Usuário não autenticado',
+      })
     }
 
     const clientRef = collection(this.db, `users/${user.uid}/client`);
@@ -41,7 +51,11 @@ export class FirestoreService {
   deleteClient(clientId: string): Promise<void> {
     const user = this.auth.currentUser;
     if (!user) {
-      return Promise.reject('Usuário não autenticado');
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: 'Usuário não autenticado',
+      })
     }
 
     const docRef = doc(this.db, `users/${user.uid}/client/${clientId}`);

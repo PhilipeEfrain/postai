@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgIf, NgClass } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ModalData, ModalService } from '../modal.service';
 

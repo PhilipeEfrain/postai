@@ -3,6 +3,7 @@ import { Firestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { Inject } from '@angular/core';
 import { Auth } from 'firebase/auth';
 import { AUTH_TOKEN, FIRESTORE_TOKEN } from '../../core/firebase.tokens';
+import { ModalService } from '../../shared/modal.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,21 +11,25 @@ import { AUTH_TOKEN, FIRESTORE_TOKEN } from '../../core/firebase.tokens';
 export class UserConfigService {
   constructor(
     @Inject(FIRESTORE_TOKEN) private firestore: Firestore,
-    @Inject(AUTH_TOKEN) private auth: Auth
-) {}
+    @Inject(AUTH_TOKEN) private auth: Auth,
+    @Inject(ModalService) private modalService: ModalService
+  ) { }
 
- // Função para salvar a configuração do usuário
- async saveUserConfig(config: any) {
+
+  async saveUserConfig(config: any) {
     try {
       const userRef = doc(this.firestore, `users/${config.uid}/configs/${config.uid}`);
       await setDoc(userRef, config);
       console.log('Configuração salva!');
     } catch (error) {
-      console.error('Erro ao salvar configuração:', error);
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: error || 'Erro ao salvar configuração',
+      })
     }
   }
 
-  // Método para obter a configuração do usuário
   async getUserConfig() {
     const user = this.auth.currentUser;
     if (!user) return null;
@@ -38,7 +43,11 @@ export class UserConfigService {
         return null; // Caso não exista a configuração
       }
     } catch (error) {
-      console.error('Erro ao obter configuração:', error);
+      this.modalService.showModal({
+        type: 'error',
+        title: 'Erro',
+        message: error || 'Erro ao obter configuração',
+      })
       return null;
     }
   }

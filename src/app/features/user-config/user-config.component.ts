@@ -51,7 +51,6 @@ export class UserConfigComponent {
     const user = this.auth.currentUser;
     if (!user) return;
 
-    // Preparar os dados para salvar
     const config = {
       uid: user.uid,
       businessName: this.form.value.businessName,
@@ -61,10 +60,7 @@ export class UserConfigComponent {
         facebook: this.form.value.facebook,
         whatsapp: this.form.value.whatsapp,
       },
-    };
-
-    // Chamar o serviço para salvar os dados no Firestore
-    console.log('Salvando configuração:', config);
+    }
     await this.userConfigService.saveUserConfig(config);
   }
 

@@ -3,12 +3,15 @@ import { Injectable } from '@angular/core';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { initializeApp } from 'firebase/app';
 import { environment } from '../../environments/environment';
+import { ModalService } from '../shared/modal.service';
 
 
 @Injectable({
     providedIn: 'root',
 })
 export class NotificationService {
+    constructor(private modalService: ModalService) { }
+
     messaging = getMessaging(initializeApp(environment.firebase));
 
     async requestPermission() {
@@ -18,19 +21,31 @@ export class NotificationService {
                 const token = await getToken(this.messaging, {
                     vapidKey: environment.firebase.vapidKey,
                 });
-                console.log('[FCM] Token do dispositivo:', token);
-                // TODO: Salvar token no Firestore vinculado ao usuário logado
+
             } else {
-                console.warn('[FCM] Permissão de notificação negada');
+                this.modalService.showModal({
+                    title: 'Permissão de Notificação',
+                    message: 'Você precisa permitir notificações para receber atualizações.',
+                    type: 'error',
+                })
             }
         } catch (err) {
-            console.error('[FCM] Erro ao solicitar permissão:', err);
+            this.modalService.showModal({
+                title: 'Erro ao solicitar permissão',
+                message: err.message,
+                type: 'error',
+            });
+
         }
     }
 
     listenMessages() {
         onMessage(this.messaging, (payload) => {
-            console.log('[FCM] Mensagem recebida em foreground:', payload);
+            this.modalService.showModal({
+                title: payload.notification?.title || 'Nova Notificação',
+                message: payload.notification?.body || 'Você tem uma nova notificação.',
+                type: 'success',
+            });
         });
     }
 }
