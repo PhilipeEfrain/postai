@@ -1,16 +1,29 @@
 const dotenv = require('dotenv');
 const fs = require('fs');
 
-dotenv.config(); // Carrega as variáveis do arquivo .env
+// Carrega variáveis do .env (funciona localmente, Vercel usa process.env automaticamente)
+dotenv.config();
 
-// Verifica se as variáveis foram carregadas corretamente
-if (!process.env.NG_API_KEY) {
-  console.error('Erro: Variáveis de ambiente não encontradas.');
-  process.exit(1); // Sai se não encontrar variáveis
+// Lista de variáveis obrigatórias
+const requiredEnvVars = [
+  'NG_API_KEY',
+  'NG_AUTH_DOMAIN',
+  'NG_PROJECT_ID',
+  'NG_STORAGE_BUCKET',
+  'NG_MESSAGING_SENDER_ID',
+  'NG_APP_ID',
+  'NG_MEASUREMENT_ID',
+  'NG_VAPID_KEY'
+];
+
+// Verifica se todas as variáveis estão presentes
+const missingVars = requiredEnvVars.filter(key => !process.env[key]);
+if (missingVars.length > 0) {
+  console.error(`Erro: Variáveis de ambiente faltando: ${missingVars.join(', ')}`);
+  process.exit(1);
 }
 
-// Cria o arquivo de configuração para o Angular
-const envConfigFile = './src/environments/env-config.ts';
+// Gera o conteúdo do arquivo de configuração
 const configContent = `
 export const environment = {
   production: false,
@@ -27,6 +40,13 @@ export const environment = {
 };
 `;
 
-// Garante que o arquivo de configuração será criado
-fs.writeFileSync(envConfigFile, configContent);
-console.log('Configuração de variáveis de ambiente criada com sucesso!');
+// Caminho onde o arquivo será gerado
+const envConfigFile = './src/environments/env-config.ts';
+
+try {
+  fs.writeFileSync(envConfigFile, configContent.trim());
+  console.log('✅ Arquivo de configuração de ambiente criado com sucesso!');
+} catch (err) {
+  console.error('❌ Erro ao criar o arquivo de configuração:', err);
+  process.exit(1);
+}
