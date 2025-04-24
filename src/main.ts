@@ -3,7 +3,6 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 // Firebase Core
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import { getFirestore, Firestore } from 'firebase/firestore';
@@ -13,7 +12,7 @@ import { getMessaging } from 'firebase/messaging';
 // App Modules
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { environment } from './environments/environment';
+import { environment } from './environments/env-config';
 import { FIRESTORE_TOKEN, AUTH_TOKEN } from './app/core/firebase.tokens';
 
 async function main() {
