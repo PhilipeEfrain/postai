@@ -22,6 +22,7 @@ export const environment = {
     messagingSenderId: "${process.env.NG_MESSAGING_SENDER_ID}",
     appId: "${process.env.NG_APP_ID}",
     measurementId: "${process.env.NG_MEASUREMENT_ID}",
+    vapidKey: "${process.env.NG_VAPID_KEY}"
   }
 };
 `;

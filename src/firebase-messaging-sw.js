@@ -9,7 +9,7 @@ firebase.initializeApp({
     messagingSenderId: "930936841932",
     appId: "1:930936841932:web:9adb9dabfbe29848d2c469",
     measurementId: "G-1MJ2C877K2",
-    vapidkey: "BCWutv3PpT5AMbTxpna9UuXh7l4bh5cjkMEqcX55OCss1j_et4Qn4Y-ICE_ZNJDitJpF4AlhPlDXN3JcvSdpmjw"
+    vapidKey: "BCWutv3PpT5AMbTxpna9UuXh7l4bh5cjkMEqcX55OCss1j_et4Qn4Y-ICE_ZNJDitJpF4AlhPlDXN3JcvSdpmjw"
 }
 );
 
