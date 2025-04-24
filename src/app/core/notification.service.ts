@@ -19,7 +19,7 @@ export class NotificationService {
             const permission = await Notification.requestPermission();
             if (permission === 'granted') {
                 const token = await getToken(this.messaging, {
-                    vapidKey: environment.firebase.vapidKey,
+                    vapidKey: environment.firebase.apiKey,
                 });
 
             } else {
