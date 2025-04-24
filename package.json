@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "prebuild": "node env-config-loader.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -43,6 +44,7 @@
     "@angular/compiler-cli": "^18.2.13",
     "@types/flatpickr": "^3.0.2",
     "@types/jasmine": "~5.1.0",
+    "dotenv": "^16.5.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
