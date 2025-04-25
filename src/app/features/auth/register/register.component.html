@@ -8,12 +8,16 @@
           <label for="email" class="form-label">E-mail</label>
           <input type="email" class="form-control" id="email" formControlName="email"
             [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched" />
-          <div class="invalid-feedback" *ngIf="form.get('email')?.errors?.['required']">
+          @if (form.get('email')?.errors?.['required']) {
+          <div class="invalid-feedback">
             E-mail é obrigatório.
           </div>
-          <div class="invalid-feedback" *ngIf="form.get('email')?.errors?.['email']">
+          }
+          @if (form.get('email')?.errors?.['email']) {
+          <div class="invalid-feedback">
             E-mail inválido.
           </div>
+          }
         </div>
 
         <!-- Senha -->
@@ -27,24 +31,32 @@
             </button>
           </div>
 
-          <div class="invalid-feedback d-block" *ngIf="form.get('password')?.errors?.['required']">
+          @if (form.get('password')?.errors?.['required']) {
+          <div class="invalid-feedback d-block">
             Senha é obrigatória.
           </div>
-          <div class="invalid-feedback d-block" *ngIf="form.get('password')?.errors?.['minlength']">
+          }
+          @if (form.get('password')?.errors?.['minlength']) {
+          <div class="invalid-feedback d-block">
             Mínimo de 6 caracteres.
           </div>
+          }
         </div>
 
         <div class="mb-3">
           <label for="confirmPassword" class="form-label">Confirmar senha</label>
           <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword"
             [class.is-invalid]="form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.touched" />
-          <div class="invalid-feedback" *ngIf="form.get('confirmPassword')?.errors?.['required']">
+          @if (form.get('confirmPassword')?.errors?.['required']) {
+          <div class="invalid-feedback">
             Confirmação é obrigatória.
           </div>
-          <div class="invalid-feedback" *ngIf="form.hasError('passwordMismatch')">
+          }
+          @if (form.hasError('passwordMismatch')) {
+          <div class="invalid-feedback">
             As senhas não coincidem.
           </div>
+          }
         </div>
 
         <div class="d-grid gap-2 mt-4">

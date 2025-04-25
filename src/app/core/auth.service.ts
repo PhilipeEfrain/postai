@@ -1,7 +1,7 @@
 // src\app\core\auth.service.ts
 import { Injectable, inject } from "@angular/core";
 import { Auth, GoogleAuthProvider, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
-import { Firestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { Observable } from "rxjs";
 import { UserConfig } from "../interface/user-config.model";
 import { AUTH_TOKEN, FIRESTORE_TOKEN } from "./firebase.tokens";

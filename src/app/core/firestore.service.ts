@@ -11,7 +11,7 @@ import { ModalService } from '../shared/modal.service';
 })
 export class FirestoreService {
   private auth = inject<Auth>(AUTH_TOKEN);
-  private db = inject<Firestore>(AUTH_TOKEN);
+  private db = inject<Firestore>(FIRESTORE_TOKEN);
   private modalService = inject<ModalService>(ModalService);
 
   addClient(text: string): Promise<void> {

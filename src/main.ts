@@ -3,6 +3,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// Removed provideExperimentalFeatures as it is not exported by @angular/core
 // Firebase Core
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import { getFirestore, Firestore } from 'firebase/firestore';
@@ -49,6 +50,16 @@ async function main() {
         console.error('Erro ao registrar Service Worker:', error);
       });
   }
+
+  await bootstrapApplication(AppComponent, {
+    providers: [
+      provideRouter(routes),
+      importProvidersFrom(BrowserAnimationsModule),
+      // Removed provideExperimentalFeatures as it is not available
+      { provide: FIRESTORE_TOKEN, useValue: firestore },
+      { provide: AUTH_TOKEN, useValue: auth },
+    ],
+  });
 
 }
 

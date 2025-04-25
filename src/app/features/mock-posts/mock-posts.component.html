@@ -1,7 +1,8 @@
-<section *ngIf="post" class="card shadow-sm rounded-4 p-3 mb-4" style="max-width: 500px; margin: auto;">
+@if(post) {
+<section class="card shadow-sm rounded-4 p-3 mb-4" style="max-width: 500px; margin: auto;">
     <h5 class="mb-3 text-center text-muted">Pré-visualização do post</h5>
-
-    <section *ngIf="post.url">
+    @if(post.url) {
+    <section>
         <ng-container [ngSwitch]="getMediaType(post.url)">
 
             <!-- YouTube -->
@@ -29,6 +30,7 @@
             </a>
         </div>
     </section>
+    }
 
     <!-- Título e descrição -->
     <div class="mb-3">
@@ -37,22 +39,27 @@
     </div>
 
     <!-- Links -->
-    <div *ngIf="post.links?.length" class="mb-3">
+    @if(post.links?.length) {
+    <div class="mb-3">
         <div *ngFor="let link of post.links" class="mb-1">
             <a [href]="link" target="_blank" class="text-primary text-decoration-underline">
                 {{ link }}
             </a>
         </div>
     </div>
+    }
 
     <!-- Tags -->
-    <div *ngIf="post.hashtags?.length" class="mb-3">
+    @if(post.hashtags.length > 0) {
+    <div class="mb-3">
         <div class="d-flex flex-wrap gap-2">
-            <span *ngFor="let tag of post.hashtags" class="badge bg-secondary">
+            <span *ngFor="let tag of post.hashtags" class="badge bg-primary">
                 {{ tag }}
             </span>
         </div>
     </div>
+    }
+
 
     <!-- Data -->
     <div class="text-end text-muted">
@@ -65,3 +72,4 @@
         <button class="btn btn-outline-danger mt-3" (click)="handleClose()">Fechar prévia</button>
     </section>
 </section>
+}

@@ -1,6 +1,6 @@
 <!-- Só mostra se tiver modalData -->
-<div *ngIf="modalData" class="modal fade show" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true"
-  style="display: block;">
+@if(modalData){
+<div class="modal fade show" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" style="display: block;">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -16,3 +16,5 @@
     </div>
   </div>
 </div>
+
+}

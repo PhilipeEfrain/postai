@@ -1,20 +1,30 @@
 <app-post-sidebar #postSidebar [postToEdit]="selectedPost" [listClients]="listClients"
   (postCreated)="onPostCreated($event)" (postUpdated)="onPostUpdated($event)"></app-post-sidebar>
 <section class="row">
-  <!-- Calendário com ngClass condicional -->
-  <div [ngClass]="openPreview ? 'calendar-page col-12 col-md-8' : 'calendar-page col-12 col-md-12'">
-    <button class="btn btn-primary" (click)="this.postSidebar.open();">Agendar nova postagem</button>
+
+  @switch (openPreview) {
+  @case (true) {
+  <div class="calendar-page col-12 col-md-8">
+    <button class="btn btn-primary" (click)="postSidebar.open()">Agendar nova postagem</button>
     <app-calendar [events]="events" (dateSelected)="onEventClicked($event)"></app-calendar>
   </div>
+  }
+  @default {
+  <div class="calendar-page col-12 col-md-12">
+    <button class="btn btn-primary" (click)="postSidebar.open()">Agendar nova postagem</button>
+    <app-calendar [events]="events" (dateSelected)="onEventClicked($event)"></app-calendar>
+  </div>
+  }
+  }
 
-  <!-- Sidebar só aparece quando openPreview for true -->
-  <div *ngIf="openPreview" class="col-12 col-md-4">
+  @if (openPreview) {
+  <div class="col-12 col-md-4">
     <app-mock-posts [post]="openPost" (edit)="openSidebarToEdit()" (closePreview)="closePreview()"
       (deletePost)="openDeleteConfirmationModal($event)" />
   </div>
+  }
 </section>
 
-<!-- Modal de Confirmação -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-3 shadow">

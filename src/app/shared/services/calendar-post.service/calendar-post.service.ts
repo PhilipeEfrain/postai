@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { Firestore, collection, Timestamp, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
 import { scheduleInCalendarPost } from "../../../interface/user-config.model";
-import { AUTH_TOKEN, FIREBASE_FIRESTORE } from "../../../core/firebase.tokens";
+import { AUTH_TOKEN, FIRESTORE_TOKEN } from "../../../core/firebase.tokens";
 import { ModalService } from "../../modal.service";
 
 
@@ -9,7 +9,7 @@ import { ModalService } from "../../modal.service";
   providedIn: 'root',
 })
 export class CalendarPostService {
-  private firestore = inject(FIREBASE_FIRESTORE);
+  private firestore = inject(FIRESTORE_TOKEN);
   private auth = inject(AUTH_TOKEN);
   private modalService = inject(ModalService);
 
