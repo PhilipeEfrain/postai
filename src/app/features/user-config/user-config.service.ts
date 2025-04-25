@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Firestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { Inject } from '@angular/core';
 import { Auth } from 'firebase/auth';
@@ -9,11 +9,9 @@ import { ModalService } from '../../shared/modal.service';
   providedIn: 'root',
 })
 export class UserConfigService {
-  constructor(
-    @Inject(FIRESTORE_TOKEN) private firestore: Firestore,
-    @Inject(AUTH_TOKEN) private auth: Auth,
-    @Inject(ModalService) private modalService: ModalService
-  ) { }
+  private firestore = inject<Firestore>(FIRESTORE_TOKEN);
+  private auth = inject<Auth>(AUTH_TOKEN);
+  private modalService = inject(ModalService);
 
 
   async saveUserConfig(config: any) {

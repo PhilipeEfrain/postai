@@ -1,21 +1,18 @@
 // src/app/core/api.service.ts
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Auth } from 'firebase/auth';
 import { firstValueFrom } from 'rxjs';
-import { FIREBASE_AUTH } from './firebase.tokens';
+import { AUTH_TOKEN, FIREBASE_AUTH } from './firebase.tokens';
 import { ModalService } from '../shared/modal.service';
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   private baseUrl = 'http://localhost:4200/api';
-
-  constructor(
-    private http: HttpClient,
-    private modalService: ModalService,
-    @Inject(FIREBASE_AUTH) private auth: Auth,
-  ) { }
+  private auth = inject<Auth>(AUTH_TOKEN)
+  private http = inject(HttpClient);
+  private modalService = inject(ModalService);
 
   async addClient(text: string): Promise<void> {
     const user = this.auth.currentUser;

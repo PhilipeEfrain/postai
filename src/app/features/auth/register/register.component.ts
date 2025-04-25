@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import {
   FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn
 } from '@angular/forms';
@@ -20,12 +20,10 @@ export class RegisterComponent implements OnInit {
   form!: FormGroup;
   isLoading = false;
   showPassword = false;
-  constructor(
-    private fb: FormBuilder,
-    private modalService: ModalService,
-    private router: Router,
-    @Inject(AUTH_TOKEN) private auth: Auth
-  ) { }
+  private fb = inject(FormBuilder);
+  private modalService = inject(ModalService);
+  private router = inject(Router);
+  private auth = inject<Auth>(AUTH_TOKEN);
 
   ngOnInit(): void {
     this.form = this.fb.group(

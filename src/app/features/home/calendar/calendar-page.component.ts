@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from "@angular/core";
+import { Component, inject, Input, ViewChild } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Observable } from "rxjs";
 import { CalendarComponent } from "./components/calendar/calendar.component";
@@ -26,7 +26,8 @@ export class CalendarPageComponent {
   private deletePostId: string | null = null;
   confirmModalInstance: any = null;
 
-  constructor(private calendarService: CalendarPostService, private modalService: ModalService) { }
+  private calendarService = inject(CalendarPostService);
+  private modalService = inject(ModalService);
 
   async ngOnInit() {
     await this.loadEvents();

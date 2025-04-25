@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, inject } from '@angular/core';
 import { Firestore, collection, addDoc, query, orderBy, CollectionReference, deleteDoc, doc } from 'firebase/firestore';
 import { Auth } from 'firebase/auth';
 import { collectionData } from 'rxfire/firestore';
@@ -10,11 +10,9 @@ import { ModalService } from '../shared/modal.service';
   providedIn: 'root',
 })
 export class FirestoreService {
-  constructor(
-    @Inject(FIRESTORE_TOKEN) private db: Firestore,
-    @Inject(AUTH_TOKEN) private auth: Auth,
-    @Inject(ModalService) private modalService: ModalService
-  ) { }
+  private auth = inject<Auth>(AUTH_TOKEN);
+  private db = inject<Firestore>(AUTH_TOKEN);
+  private modalService = inject<ModalService>(ModalService);
 
   addClient(text: string): Promise<void> {
     const user = this.auth.currentUser;

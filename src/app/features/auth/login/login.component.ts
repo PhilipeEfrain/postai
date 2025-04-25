@@ -1,5 +1,5 @@
 // src/app/features/auth/login/login.component.ts
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -27,13 +27,10 @@ import { AUTH_TOKEN } from '../../../core/firebase.tokens';
 export class LoginComponent {
   email = '';
   password = '';
-
-  constructor(
-    private router: Router,
-    @Inject(AUTH_TOKEN) private auth: Auth,
-    private modalService: ModalService,
-    private authService: AuthService
-  ) { }
+  private router = inject(Router);
+  private auth = inject<Auth>(AUTH_TOKEN);
+  private modalService = inject(ModalService);
+  private authService = inject(AuthService);
 
   async login() {
     try {

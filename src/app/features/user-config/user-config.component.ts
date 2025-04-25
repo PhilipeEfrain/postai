@@ -19,7 +19,7 @@ export class UserConfigComponent {
   private fb = inject(FormBuilder);
   private userConfigService = inject(UserConfigService);
 
-  constructor(@Inject(AUTH_TOKEN) private auth: Auth) { }
+  private auth = inject<Auth>(AUTH_TOKEN);
 
   form: FormGroup = this.fb.group({
     businessName: [''],

@@ -1,5 +1,5 @@
 // src/app/core/notification.service.ts
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { initializeApp } from 'firebase/app';
 import { environment } from '../../environments/environment';
@@ -10,7 +10,7 @@ import { ModalService } from '../shared/modal.service';
     providedIn: 'root',
 })
 export class NotificationService {
-    constructor(private modalService: ModalService) { }
+    private modalService = inject(ModalService);
 
     messaging = getMessaging(initializeApp(environment.firebase));
 
